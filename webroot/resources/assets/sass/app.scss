@@ -1,2 +1,60 @@
 // @import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap";
 
+/**
+ * Import Susy.
+ * http://susy.oddbird.net/
+ */
+@import "../../../node_modules/susy/sass/susy";
+/**
+ * Import Breakpoint
+ * http://breakpoint-sass.com/
+ */
+@import "../../../node_modules/breakpoint-sass/stylesheets/breakpoint";
+
+$susy: (
+  columns: 12,
+  container: 1200px,
+  gutters: 1/4, // The size of a gutter in relation to a single column
+  global-box-sizing: border-box,
+  debug: (image: show)
+);
+
+/**
+ * The 7-1 Pattern by Hugo Giraudel
+ * http://sass-guidelin.es/#the-7-1-pattern
+ */
+
+/**
+ * Contains 3rd-party styles, mixins, etc.
+ */
+@import 'vendors/module';
+
+/**
+ * Contains global styles, such as resets, typography, colors, etc.
+ */
+@import 'base/module';
+
+/**
+ * Contains each self-contained component in its own .scss partial
+ */
+@import 'components/module';
+
+/**
+ * Contains page-specific styling, if necessary.
+ */
+@import 'pages/module';
+
+/**
+ * Contains global mixins, functions, helper selectors, etc.
+ */
+@import 'utils/module';
+
+/**
+ * Contains styling for larger layout components; e.g. nav, header, footer, etc.
+ */
+@import 'layout/module';
+
+/**
+ * Contains styling for different themes.
+ */
+@import 'themes/module';

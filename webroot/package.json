@@ -1,7 +1,6 @@
 {
   "private": true,
   "devDependencies": {
-    "breakpoint": "^0.1.6",
     "breakpoint-sass": "^2.6.1",
     "gulp": "^3.8.8",
     "gulp-sass": "^2.2.0",

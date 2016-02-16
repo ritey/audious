@@ -5,8 +5,6 @@
 /**
  * Breakpoints for responsive design.
  */
-$breakpoints: (
-  'medium': 800px,
-  'large':  1000px,
-  'huge':   1200px,
-);
+$medium: 800px;
+$large:  1000px;
+$huge:   1200px;

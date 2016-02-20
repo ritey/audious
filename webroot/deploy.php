@@ -2,18 +2,23 @@
 
 require 'recipe/laravel.php';
 
+$path = '/var/www/audious';
+
 // Define a server for deployment.
 server('prod', 'audrius.io', 22)
   ->user('deployer')
   ->identityFile('~/.ssh/id_deployex.pub', '~/.ssh/id_deployex', '')
   ->stage('production')
-  ->env('deploy_path', '/var/www/audious'); // Define the base path to deploy your project to.
+  ->env('deploy_path', $path); // Define the base path to deploy your project to.
 
 // Set repository.
 set('repository', 'git@github.com:ritey/audious.git');
 
 // Path to composer.
 set('composer_command', 'composer');
+
+// Set path.
+set('path', $path);
 
 /**
  * Returns webroot folder.
@@ -50,13 +55,24 @@ task('deploy:vendors', function () {
 task('change_permissions', function() {
   run("chmod -R g+w {{release_path}}");
 });
+//after('deploy', 'change_permissions');
 
-after('deploy', 'change_permissions');
+/**
+ * Symlink .env file
+ */
+task('environment', function() {
+  run("ln -s {{path}}/shared/.env {{release_webroot}}");
+});
 
-/*task('deploy', [
+// Deployment script.
+task('deploy', [
   'deploy:prepare',
+  'deploy:release',
   'deploy:update_code',
   'deploy:vendors',
+  'deploy:shared',
   'deploy:symlink',
-  'deploy:cleanup'
-]);*/
+  'cleanup',
+  'change_permissions',
+  'environment',
+])->desc('Deploy your project');

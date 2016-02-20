@@ -26,7 +26,7 @@ env('release_webroot', function () {
  * Release path
  */
 env('release_path', function () {
-    return str_replace("\n", '', run("readlink {{deploy_path}}/release")) . '/webroot';
+    return str_replace("\n", '', run("readlink {{deploy_path}}/release"));
 });
 
 // Override original composer task.

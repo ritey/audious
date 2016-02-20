@@ -51,7 +51,7 @@ task('change_permissions', function() {
   run("chmod -R g+w {{release_path}}");
 });
 
-after('deploy:cleanup', 'change_permissions');
+after('deploy', 'change_permissions');
 
 /*task('deploy', [
   'deploy:prepare',

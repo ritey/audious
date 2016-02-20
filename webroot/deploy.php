@@ -22,6 +22,13 @@ env('release_webroot', function () {
     return str_replace("\n", '', run("readlink {{deploy_path}}/release")) . '/webroot';
 });
 
+/**
+ * Release path
+ */
+env('release_path', function () {
+    return str_replace("\n", '', run("readlink {{deploy_path}}/release")) . '/webroot';
+});
+
 // Override original composer task.
 /**
  * Installing vendors tasks.
@@ -36,6 +43,15 @@ task('deploy:vendors', function () {
   $composerEnvVars = env('env_vars') ? 'export ' . env('env_vars') . ' &&' : '';
   run("cd {{release_webroot}} && $composerEnvVars $composer {{composer_options}}");
 })->desc('Installing vendors');
+
+/**
+ * Make deployed files writable to www-data group.
+ */
+task('change_permissions', function() {
+  run("chmod -R g+w {{release_path}}");
+});
+
+after('deploy:cleanup', 'change_permissions');
 
 /*task('deploy', [
   'deploy:prepare',

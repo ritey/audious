@@ -18,7 +18,7 @@ set('repository', 'git@github.com:ritey/audious.git');
 set('composer_command', 'composer');
 
 // Set path.
-set('path', $path);
+env('path', $path);
 
 /**
  * Returns webroot folder.
@@ -64,6 +64,18 @@ task('environment', function() {
   run("ln -s {{path}}/shared/.env {{release_webroot}}");
 });
 
+/**
+ * Run Laravel5 optimisation commands.
+ * Reference: http://sentinelstand.com/article/laravel-5-optimization-commands.
+ */
+task('optimise', function() {
+  cd('{{deploy_path}}/release/webroot');
+  run('php artisan optimize');
+  run('php artisan config:cache');
+  // Enable when route classes are being used.
+  //run('php artisan route:cache');
+});
+
 // Deployment script.
 task('deploy', [
   'deploy:prepare',
@@ -71,8 +83,9 @@ task('deploy', [
   'deploy:update_code',
   'deploy:vendors',
   'deploy:shared',
-  'deploy:symlink',
-  'cleanup',
   'change_permissions',
   'environment',
+  'optimise',
+  'deploy:symlink',
+  'cleanup',
 ])->desc('Deploy your project');

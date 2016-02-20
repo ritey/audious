@@ -12,8 +12,12 @@
 */
 
 Route::group(['middleware' => ['web']], function () {
-  // Temporary homepage.
-  Route::get('/', function() {
-    return view('welcome');
+  // Homepage.
+  Route::get('/', 'PageController@index');
+
+  // Login routes.
+  Route::group(['prefix' => 'login'], function() {
+    // Soundcloud login route.
+    Route::get('soundcloud', 'SoundcloudController@login');
   });
 });

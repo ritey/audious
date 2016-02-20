@@ -156,6 +156,8 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
+        Njasm\Laravel\Soundcloud\SoundcloudProvider::class,
+
     ],
 
     /*

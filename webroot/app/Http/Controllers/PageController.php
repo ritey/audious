@@ -30,13 +30,19 @@ class PageController extends Controller
    */
   public function index(Request $request)
   {
-    //print_r($request->session()->get('services.soundcloud.access_token'));die;
-    //print_r($this->soundcloud->get('/me', ['oauth_token' => 'services.soundcloud.access_token']));die;
+    $soundcloud_link = url('/logout/soundcloud');
+    $soundcloud_img = asset('img/btn-disconnect-s.png');
+    // Show login link instead of logout.
+    if (!$request->session()->has('services.soundcloud')) {
+      $soundcloud_link = $this->soundcloud->getAuthUrl();
+      $soundcloud_img = asset('img/btn-connect-s.png');
+    }
+
     return view('homepage', [
       'services' => [
         'soundcloud' => [
-          'link' => $this->soundcloud->getAuthUrl(),
-          'image' => asset('img/btn-connect-s.png'),
+          'link' => $soundcloud_link,
+          'image' => $soundcloud_img,
         ],
       ],
     ]);

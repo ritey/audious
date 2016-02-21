@@ -20,4 +20,9 @@ Route::group(['middleware' => ['web']], function () {
     // Soundcloud login route.
     Route::get('soundcloud', 'SoundcloudController@login');
   });
+  // Logout routes.
+  Route::group(['prefix' => 'logout'], function() {
+    // Soundcloud login route.
+    Route::get('soundcloud', 'SoundcloudController@logout');
+  });
 });

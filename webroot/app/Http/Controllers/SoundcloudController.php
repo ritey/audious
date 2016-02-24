@@ -57,9 +57,11 @@ class SoundcloudController extends Controller
     $data = [
       'soundcloud' => [
         'access_token' => $access_token,
-        'data' => $this->soundcloudRepository->me($access_token),
+        'user' => $this->soundcloudRepository->me($access_token),
       ],
     ];
+
+    $data['soundcloud']['music']['favorites'] = $this->soundcloudRepository->favorites($data['soundcloud']['user']->id, $access_token);
 
     // If first login.
     if (!$request->session()->has('services'))

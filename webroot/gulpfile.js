@@ -12,5 +12,15 @@ var elixir = require('laravel-elixir');
  */
 
 elixir(function(mix) {
-    mix.sass('app.scss').version('css/app.css');
+  // Compile CSS.
+  mix.sass('app.scss');
+
+  // Compile JS.
+  // Lets use browserify to nicely split JS files.
+  mix.browserify('main.js');
+
+  mix.version([
+    'css/app.css',
+    'js/main.js',
+  ]);
 });

@@ -15,9 +15,12 @@
  *
  * Soundcloud JS SDK
  * https://developers.soundcloud.com/docs/api/sdks
+ *
+ * Handy!!
+ * http://simblestudios.com/blog/development/wmtafo-backbone-part1.html
  */
 
-import {AppView} from './app';
+import { AppView } from './app';
 
 /**
  * Document ready event

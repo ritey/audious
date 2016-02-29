@@ -50,7 +50,11 @@ class PageController extends Controller
         'soundcloud' => [
           'link' => $soundcloud_link,
           'image' => $soundcloud_img,
-          'music' => [
+        ],
+      ],
+      'js_config' => [
+        'music' => [
+          'soundcloud' => [
             'favorites' => Song::songs('soundcloud', 'favorites'),
           ],
         ],

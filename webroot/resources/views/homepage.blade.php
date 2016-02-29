@@ -1,17 +1,6 @@
 
 @extends('layouts.app')
 
-@section('content')
-
-  @if (!isset($services['soundcloud']['music']['favorites']) ||
-        empty($services['soundcloud']['music']['favorites']))
-    <p>No tracks present.</p>
-  @else
-    @include('partials.tracklist')
-  @endif
-
-@endsection
-
 @section('header')
 
   @if (count($services) > 0)

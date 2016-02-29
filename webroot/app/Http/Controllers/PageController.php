@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Njasm\Soundcloud\SoundcloudFacade;
+use App\Song;
 
 class PageController extends Controller
 {
@@ -31,8 +32,8 @@ class PageController extends Controller
    */
   public function index(Request $request)
   {
-    //print_r($request->session()->get('services.soundcloud'));
 
+    // @TODO: think of a more elegant solution.
     $soundcloud_link = url('/logout/soundcloud');
     $soundcloud_img = asset('img/btn-disconnect-s.png');
     // Show login link instead of logout.
@@ -40,13 +41,6 @@ class PageController extends Controller
     {
       $soundcloud_link = $this->soundcloud->getAuthUrl();
       $soundcloud_img = asset('img/btn-connect-s.png');
-    }
-
-    // Get Soundcloud favorite tracks.
-    $soundcloud_fav = null;
-    if ($request->session()->has('services.soundcloud.music.favorites'))
-    {
-      $soundcloud_fav = $request->session()->get('services.soundcloud.music.favorites');
     }
 
     return view('homepage', [
@@ -57,11 +51,10 @@ class PageController extends Controller
           'link' => $soundcloud_link,
           'image' => $soundcloud_img,
           'music' => [
-            'favorites' => $soundcloud_fav
+            'favorites' => Song::songs('soundcloud', 'favorites'),
           ],
         ],
       ],
-      'soundcloud'
     ]);
   }
 }

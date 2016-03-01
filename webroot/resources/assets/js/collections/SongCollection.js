@@ -7,13 +7,10 @@ var { Collection } = Backbone;
  */
 export class SongList extends Collection
 {
-  constructor(options)
-  {
+  constructor(options) {
     super(options);
 
     this.model = Song;
-
-    //this.localStorage = new LocalStorage('songs');
   }
 
   /**
@@ -23,8 +20,7 @@ export class SongList extends Collection
    * In model level it will iterate through individual items.
    * Figure how to load only needed stuff in the feature.
    */
-  parse(response)
-  {
+  parse(response) {
     return response.music.soundcloud.favorites;
   }
 }

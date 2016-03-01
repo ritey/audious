@@ -112,8 +112,6 @@ var SongList = exports.SongList = function (_Collection) {
     var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(SongList).call(this, options));
 
     _this.model = _Song.Song;
-
-    //this.localStorage = new LocalStorage('songs');
     return _this;
   }
 
@@ -163,6 +161,12 @@ $(function () {
      *
      * Soundcloud JS SDK
      * https://developers.soundcloud.com/docs/api/sdks
+     *
+     * Handy!!
+     * http://simblestudios.com/blog/development/wmtafo-backbone-part1.html
+     *
+     * Backbone.js Patterns:
+     * http://ricostacruz.com/backbone-patterns/index.html
      */
 
 },{"./app":1}],4:[function(require,module,exports){
@@ -208,11 +212,19 @@ var Song = exports.Song = function (_Model) {
         active: false
       };
     }
+
+    /**
+     * Parse Song details.
+     * At this stage Backbone iterates through individual SongCollection items.
+     */
+
   }, {
     key: 'parse',
     value: function parse(response) {
-      console.log(response);
-      return response;
+      /**
+       * Convenient underscore.js method to extract needed data subset from larger one.
+       */
+      return _.pick(response, 'title', 'duration');
     }
 
     /**

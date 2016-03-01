@@ -18,6 +18,9 @@
  *
  * Handy!!
  * http://simblestudios.com/blog/development/wmtafo-backbone-part1.html
+ *
+ * Backbone.js Patterns:
+ * http://ricostacruz.com/backbone-patterns/index.html
  */
 
 import { AppView } from './app';

@@ -10,8 +10,7 @@ Songs.reset(data, {parse: true});
 
 export class AppView extends View
 {
-  constructor()
-  {
+  constructor() {
     super();
 
     this.$el = $('#app');
@@ -26,8 +25,7 @@ export class AppView extends View
   /**
    * Authorize Soundcloud SDK
    */
-  authorise()
-  {
+  authorise() {
     SC.initialize({
       client_id: document.querySelector("meta[name='client_id']").getAttribute('content'),
       redirect_uri: document.querySelector("meta[name='redirect_uri']").getAttribute('content')
@@ -39,8 +37,7 @@ export class AppView extends View
   /**
    * Play song.
    */
-  play()
-  {
+  play() {
     if (this.soundcloudReady)
     {
 

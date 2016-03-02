@@ -10,6 +10,8 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _SongCollection = require('./collections/SongCollection');
 
+var _SongView = require('./views/SongView');
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -27,9 +29,6 @@ var LocalStorage = _Backbone.LocalStorage;
 
 var Songs = new _SongCollection.SongList();
 
-// Populate Songs collection with static data provided by server in data var.
-Songs.reset(data, { parse: true });
-
 var AppView = exports.AppView = function (_View) {
   _inherits(AppView, _View);
 
@@ -44,16 +43,55 @@ var AppView = exports.AppView = function (_View) {
     // Authorise Soundcloud SDK.
     _this.authorise();
 
+    // Event when all songs are added. Runs on startup.
+    _this.listenTo(Songs, 'reset', _this.addAll);
     _this.listenTo(Songs, 'play', _this.play);
+
+    // Populate Songs collection with static data provided by server in data var.
+    Songs.reset(data, { parse: true });
     return _this;
   }
 
   /**
-   * Authorize Soundcloud SDK
+   * Render App.
    */
 
 
   _createClass(AppView, [{
+    key: 'render',
+    value: function render() {
+      if (Songs.length) {}
+    }
+
+    /**
+     * Display all songs.
+     */
+
+  }, {
+    key: 'addAll',
+    value: function addAll() {
+      this.$('#playlist').html('');
+      // Iterate through songs and add each to html.
+      Songs.each(this.addOne, this);
+    }
+
+    /**
+     * Display one song.
+     */
+
+  }, {
+    key: 'addOne',
+    value: function addOne(model) {
+      var view = new _SongView.SongView({ model: model });
+      // Append list with rendered Song partial view.
+      $('#playlist').append(view.render().el);
+    }
+
+    /**
+     * Authorize Soundcloud SDK
+     */
+
+  }, {
     key: 'authorise',
     value: function authorise() {
       SC.initialize({
@@ -78,7 +116,7 @@ var AppView = exports.AppView = function (_View) {
   return AppView;
 }(View);
 
-},{"./collections/SongCollection":2}],2:[function(require,module,exports){
+},{"./collections/SongCollection":2,"./views/SongView":6}],2:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -243,6 +281,65 @@ var Song = exports.Song = function (_Model) {
   return Song;
 }(Model);
 
-},{}]},{},[3]);
+},{}],5:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+/**
+ * Songs list item template.
+ */
+var SONG_LI_TPL = exports.SONG_LI_TPL = _.template("<span class='title'><%= title %></span>");
+
+},{}],6:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.SongView = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _song_li = require('../templates/song_li.tpl');
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var _Backbone = Backbone;
+var View = _Backbone.View;
+
+var SongView = exports.SongView = function (_View) {
+  _inherits(SongView, _View);
+
+  function SongView(options) {
+    _classCallCheck(this, SongView);
+
+    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(SongView).call(this, options));
+
+    _this.tagName = 'li';
+
+    // Cache the template function for a single item.
+    _this.template = _song_li.SONG_LI_TPL;
+    return _this;
+  }
+
+  _createClass(SongView, [{
+    key: 'render',
+    value: function render() {
+      // Pass model data to template and then append to DOM.
+      this.$el.html(this.template(this.model.toJSON()));
+      return this;
+    }
+  }]);
+
+  return SongView;
+}(View);
+
+},{"../templates/song_li.tpl":5}]},{},[3]);
 
 //# sourceMappingURL=main.js.map

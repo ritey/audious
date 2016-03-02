@@ -1,6 +1,10 @@
 
 @extends('layouts.app')
 
+@section('content')
+  <ul id="playlist"></ul>
+@endsection
+
 @section('header')
 
   @if (count($services) > 0)

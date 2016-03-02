@@ -1,12 +1,10 @@
 import { SongList } from './collections/SongCollection';
+import { SongView } from './views/SongView';
 
 var { Model, View, Collection, Router, LocalStorage } = Backbone;
 
 // Global Songs collection variable.
 var Songs = new SongList();
-
-// Populate Songs collection with static data provided by server in data var.
-Songs.reset(data, {parse: true});
 
 export class AppView extends View
 {
@@ -19,7 +17,39 @@ export class AppView extends View
     // Authorise Soundcloud SDK.
     this.authorise();
 
+    // Event when all songs are added. Runs on startup.
+    this.listenTo(Songs, 'reset', this.addAll);
     this.listenTo(Songs, 'play', this.play);
+
+    // Populate Songs collection with static data provided by server in data var.
+    Songs.reset(data, {parse: true});
+  }
+
+  /**
+   * Render App.
+   */
+  render() {
+    if (Songs.length) {
+
+    }
+  }
+
+  /**
+   * Display all songs.
+   */
+  addAll() {
+    this.$('#playlist').html('');
+    // Iterate through songs and add each to html.
+    Songs.each(this.addOne, this);
+  }
+
+  /**
+   * Display one song.
+   */
+  addOne(model) {
+    var view = new SongView({ model });
+    // Append list with rendered Song partial view.
+    $('#playlist').append(view.render().el);
   }
 
   /**

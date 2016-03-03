@@ -40,6 +40,7 @@
     <script src="https://connect.soundcloud.com/sdk/sdk-3.0.0.js"></script>
     <script src="http://underscorejs.org/underscore-min.js" type="text/javascript"></script>
     <script src="http://backbonejs.org/backbone-min.js" type="text/javascript"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/backbone-localstorage.js/1.1.16/backbone.localStorage-min.js" type="text/javascript"></script>
     <script src="{{ elixir('js/main.js') }}" type="text/javascript"></script>
   </body>
 </html>

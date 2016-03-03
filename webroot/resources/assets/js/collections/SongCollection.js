@@ -1,6 +1,6 @@
 import { Song } from '../models/Song';
 
-var { Collection } = Backbone;
+var { Collection, LocalStorage } = Backbone;
 
 /**
  * Song Collection
@@ -11,6 +11,8 @@ export class SongList extends Collection
     super(options);
 
     this.model = Song;
+
+    this.localStorage = new LocalStorage('SongCollection-backbone');
   }
 
   /**

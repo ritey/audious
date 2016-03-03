@@ -136,6 +136,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var _Backbone = Backbone;
 var Collection = _Backbone.Collection;
+var LocalStorage = _Backbone.LocalStorage;
 
 /**
  * Song Collection
@@ -150,6 +151,8 @@ var SongList = exports.SongList = function (_Collection) {
     var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(SongList).call(this, options));
 
     _this.model = _Song.Song;
+
+    _this.localStorage = new LocalStorage('SongCollection-backbone');
     return _this;
   }
 
@@ -290,7 +293,7 @@ Object.defineProperty(exports, "__esModule", {
 /**
  * Songs list item template.
  */
-var SONG_LI_TPL = exports.SONG_LI_TPL = _.template("<span class='title'><%= title %></span>");
+var SONG_LI_TPL = exports.SONG_LI_TPL = _.template("<span class='title'><%= title %></span>" + "<button class='play'>Play</button>");
 
 },{}],6:[function(require,module,exports){
 'use strict';
@@ -319,11 +322,22 @@ var SongView = exports.SongView = function (_View) {
   function SongView(options) {
     _classCallCheck(this, SongView);
 
-    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(SongView).call(this, options));
+    // Parent element doesn't have defined tagName,
+    // Therefore append options object with it
+    // because this.tagName will not work in this context.
+    options.tagName = 'li';
+    // Add class to li element.
+    options.className = 'playlist-song';
 
-    _this.tagName = 'li';
+    // Attach events.
+    options.events = {
+      "click button.play": "play"
+    };
 
     // Cache the template function for a single item.
+
+    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(SongView).call(this, options));
+
     _this.template = _song_li.SONG_LI_TPL;
     return _this;
   }
@@ -333,7 +347,20 @@ var SongView = exports.SongView = function (_View) {
     value: function render() {
       // Pass model data to template and then append to DOM.
       this.$el.html(this.template(this.model.toJSON()));
+
+      this.$el.toggleClass('active', this.model.get('active'));
+      console.log(this);
       return this;
+    }
+
+    /**
+     * Play button event callback.
+     */
+
+  }, {
+    key: 'play',
+    value: function play() {
+      this.model.toggle();
     }
   }]);
 

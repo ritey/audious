@@ -11,7 +11,7 @@ export class Song extends Model
     return {
       title: '',
       duration: 0,
-      active: false,
+      active: false
     };
   }
 
@@ -32,6 +32,6 @@ export class Song extends Model
   toggle() {
     this.save({
       active: !this.get('active')
-    })
+    });
   }
 }

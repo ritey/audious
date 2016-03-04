@@ -22,7 +22,8 @@ export class AppView extends View
     this.listenTo(Songs, 'play', this.play);
 
     // Populate Songs collection with static data provided by server in data var.
-    Songs.reset(data, {parse: true});
+    //Songs.reset(data, {parse: true});
+    Songs.fetch();
   }
 
   /**

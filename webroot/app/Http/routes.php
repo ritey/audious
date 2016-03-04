@@ -25,4 +25,10 @@ Route::group(['middleware' => ['web']], function () {
     // Soundcloud login route.
     Route::get('soundcloud', 'SoundcloudController@logout');
   });
+
+  // API Callbacks for BackboneJS.
+  Route::group(['prefix' => 'api'], function () {
+    // Return all songs.
+    Route::get('songs', 'ApiController@index');
+  });
 });

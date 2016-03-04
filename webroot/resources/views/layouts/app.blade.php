@@ -8,9 +8,6 @@
     <meta name="redirect_uri" content="{{ $redirect_uri }}">
     <title>Audious</title>
     <link rel="stylesheet" href="{{ elixir('css/app.css') }}">
-    <script>
-      var data = {!! json_encode($js_config) !!};
-    </script>
   </head>
   <body>
 

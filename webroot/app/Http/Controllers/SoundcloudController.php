@@ -27,8 +27,7 @@ class SoundcloudController extends Controller
    * @param  SoundcloudFacade  $soundcloud
    * @return void
    */
-  public function __construct(SoundcloudFacade $soundcloud, SoundcloudRepository $soundcloudRepository)
-  {
+  public function __construct(SoundcloudFacade $soundcloud, SoundcloudRepository $soundcloudRepository) {
     $this->soundcloud = $soundcloud;
     $this->soundcloudRepository = $soundcloudRepository;
   }
@@ -38,13 +37,11 @@ class SoundcloudController extends Controller
    * @param  string $code Soundcloud auth code.
    * @return string       access_token
    */
-  private function getAccessToken($code)
-  {
+  private function getAccessToken($code) {
     $response = $this->soundcloud->codeForToken($code);
 
     // Check if we got 200 response code
-    if ($response->getHttpCode() != "200")
-    {
+    if ($response->getHttpCode() != "200") {
       return false;
     }
 
@@ -52,8 +49,7 @@ class SoundcloudController extends Controller
     return $response->bodyObject()->access_token;
   }
 
-  private function saveSession(Request $request, $access_token)
-  {
+  private function saveSession(Request $request, $access_token) {
     $data = [
       'soundcloud' => [
         'access_token' => $access_token,
@@ -64,12 +60,10 @@ class SoundcloudController extends Controller
     $data['soundcloud']['music']['favorites'] = $this->soundcloudRepository->favorites($data['soundcloud']['user']->id, $access_token);
 
     // If first login.
-    if (!$request->session()->has('services'))
-    {
+    if (!$request->session()->has('services')) {
       $request->session()->put('services', $data);
     }
-    else
-    {
+    else {
       // If not first service login, i.e. already logged in via youtube,
       // Append services session.
       $request->session()->put('services.soundcloud', $data['soundcloud']);
@@ -79,11 +73,9 @@ class SoundcloudController extends Controller
   /**
    * Soundcloud login callback.
    */
-  public function login(Request $request)
-  {
+  public function login(Request $request) {
     // Check if we have code query.
-    if (!$request->has('code'))
-    {
+    if (!$request->has('code')) {
       // If not, redirect to homepage.
       return redirect('/');
     }
@@ -94,8 +86,7 @@ class SoundcloudController extends Controller
     $access_token = $this->getAccessToken($code);
 
     // Redirect to homepage if couldn't get access_token.
-    if (!$access_token)
-    {
+    if (!$access_token) {
       return redirect('/');
     }
 
@@ -107,8 +98,7 @@ class SoundcloudController extends Controller
   /**
    * Soundcloud logout link.
    */
-  public function logout(Request $request)
-  {
+  public function logout(Request $request) {
     // Delete Soundcloud session data.
     $request->session()->forget('services.soundcloud');
     return redirect('/');

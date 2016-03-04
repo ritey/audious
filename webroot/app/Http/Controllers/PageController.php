@@ -51,14 +51,7 @@ class PageController extends Controller
           'link' => $soundcloud_link,
           'image' => $soundcloud_img,
         ],
-      ],
-      'js_config' => [
-        'music' => [
-          'soundcloud' => [
-            'favorites' => Song::songs('soundcloud', 'favorites'),
-          ],
-        ],
-      ],
+      ]
     ]);
   }
 }

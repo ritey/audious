@@ -12,7 +12,7 @@ export class SongList extends Collection
 
     this.model = Song;
 
-    this.localStorage = new LocalStorage('SongCollection-backbone');
+    this.url = '/api/songs';
   }
 
   /**

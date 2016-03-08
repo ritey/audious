@@ -44,6 +44,8 @@ class PageController extends Controller
    * Homepage
    */
   public function index(Request $request) {
+    $this->googleRepository->getPlaylists($request);
+
     return view('homepage', [
       'client_id' => env('SOUNDCLOUD_CLIENT_ID'),
       'redirect_uri' => env('SOUNDCLOUD_CALLBACK_URL'),

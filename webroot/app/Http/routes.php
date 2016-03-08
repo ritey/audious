@@ -25,8 +25,10 @@ Route::group(['middleware' => ['web']], function () {
 
   // Logout routes.
   Route::group(['prefix' => 'logout'], function() {
-    // Soundcloud login route.
+    // Soundcloud logout route.
     Route::get('soundcloud', 'SoundcloudController@logout');
+    // Google logout route.
+    Route::get('google', 'GoogleController@logout');
   });
 
   // API Callbacks for BackboneJS.

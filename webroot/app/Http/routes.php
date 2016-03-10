@@ -21,6 +21,8 @@ Route::group(['middleware' => ['web']], function () {
     Route::get('soundcloud', 'SoundcloudController@login');
     // Google login route.
     Route::get('google', 'GoogleController@login');
+    // Spotify login route.
+    Route::get('spotify', 'SpotifyController@login');
   });
 
   // Logout routes.

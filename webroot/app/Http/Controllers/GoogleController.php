@@ -5,10 +5,26 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use App\Repositories\GoogleRepository;
 use GuzzleHttp\Client;
 
 class GoogleController extends Controller
 {
+
+  /**
+   * The Google repository instance.
+   */
+  protected $googleRepository;
+
+  /**
+   * Create a controller instance.
+   * @param  GoogleRepository  $googleRepository
+   * @return void
+   */
+  /*public function __construct(GoogleRepository $googleRepository) {
+    $this->googleRepository = $googleRepository;
+  }*/
+
   /**
    * Login using Google oAuth.
    * How to login:
@@ -54,9 +70,19 @@ class GoogleController extends Controller
     $response = json_decode($response->getBody()->getContents());
     $access_token = $response->access_token;
 
+    //Init GoogleRepository after authentication when we have access_token.
+    $this->initGoogleRepository($request, $access_token);
+
     $this->saveSession($request, $access_token);
 
     return redirect('/');
+  }
+
+  /**
+   * Init GoogleRepository after authentication when we have access_token.
+   */
+  private function initGoogleRepository($request, $access_token) {
+    $this->googleRepository = new GoogleRepository($request, $access_token);
   }
 
   /**
@@ -77,11 +103,9 @@ class GoogleController extends Controller
     $data = [
       'youtube' => [
         'access_token' => $access_token,
-        //'user' => $this->soundcloudRepository->me($access_token),
+        'music' => $this->googleRepository->getPlaylists(),
       ],
     ];
-
-    //$data['soundcloud']['music']['favorites'] = $this->soundcloudRepository->favorites($data['soundcloud']['user']->id, $access_token);
 
     // If first login.
     if (!$request->session()->has('services')) {

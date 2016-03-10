@@ -7,6 +7,35 @@ use GuzzleHttp\Client;
 
 class GoogleRepository
 {
+
+  /**
+   * Guzzle object.
+   */
+  protected $guzzle;
+
+/**
+ * Pre-define common Guzzle params.
+ */
+  public function __construct(Request $request, $access_token = NULL) {
+    if (!$access_token) {
+      if (!$request->session()->has('services.youtube.access_token')) {
+        return;
+      }
+
+      $access_token = $request->session()->get('services.youtube.access_token');
+    }
+    //
+    $this->guzzle = new Client([
+      'base_uri' => 'https://www.googleapis.com/youtube/v3/',
+      'headers' => [
+        'Authorization' => "Bearer $access_token",
+      ],
+      'query' => [
+        'key' => $access_token,
+      ],
+    ]);
+  }
+
   /**
    * Return login/logout link and corresponding image.
    */
@@ -23,27 +52,47 @@ class GoogleRepository
     ];
   }
 
-  public function getPlaylists(Request $request) {
-    if (!$request->session()->has('services.youtube')) {
-      return [];
-    }
-
-    $access_token = $request->session()->get('services.youtube.access_token');
-
-    $client = new Client();
-    $response = $client->request('GET', 'https://www.googleapis.com/youtube/v3/playlists',[
-      'headers' => [
-        'Authorization' => "Bearer $access_token",
-      ],
+  /**
+   * Get Youtube playlists.
+   */
+  public function getPlaylists() {
+    // Append guzzle instance with needed params and execute.
+    $response = $this->guzzle->request('GET', 'playlists', [
       'query' => [
         'part' => 'snippet',
         'mine' => 'true',
-        'key' => $access_token,
+        // Gets max 50 channels (would need to make pagination otherwise).
+        'maxResults' => 50,
       ],
     ]);
 
-    $playlists = $response->getBody()->getContents();
+    $playlists = json_decode($response->getBody()->getContents());
+    $playlist_items = [];
 
-    // Got all user playlists.
+    // Google might support requests batch but performance isn't number,
+    // one priority for this project.
+    foreach ($playlists->items as $playlist) {
+      $playlist_items[$playlist->snippet->title] = $this->getPlaylistItems($playlist->id);
+    }
+
+    return $playlist_items;
+  }
+
+  /**
+   * Fetch playlist videos.
+   * @param   $id playlist id
+   * @return  playlist items info.
+   */
+  private function getPlaylistItems($id) {
+    $response = $this->guzzle->request('GET', 'playlistItems', [
+      'query' => [
+        'part' => 'snippet',
+        'playlistId' => $id,
+        // Gets max 50 videos per channel (would need to make pagination otherwise).
+        'maxResults' => 50,
+      ],
+    ]);
+    $response = json_decode($response->getBody()->getContents());
+    return $response->items;
   }
 }

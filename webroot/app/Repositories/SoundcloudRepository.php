@@ -59,17 +59,14 @@ class SoundcloudRepository extends Soundcloud
    */
   public function getAuthLinks(Request $request) {
     $soundcloud_link = url('/logout/soundcloud');
-    $soundcloud_img = asset('img/btn-disconnect-s.png');
-
     // Show login link instead of logout.
     if (!$request->session()->has('services.soundcloud')) {
       $soundcloud_link = $this->soundcloud->getAuthUrl();
-      $soundcloud_img = asset('img/btn-connect-s.png');
     }
 
     return [
       'link' => $soundcloud_link,
-      'image' => $soundcloud_img,
+      'icon' => 'fa fa-soundcloud',
     ];
   }
 }

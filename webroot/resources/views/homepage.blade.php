@@ -12,7 +12,7 @@
     <div class="services">
       <ul>
         @foreach ($services as $name => $service)
-          <li class="{{ $name }}"><a href="{{ $service['link'] }}"><img src="{{ $service['image'] }}" title="{{ $name }}" /></a></li>
+          <li class="{{ $name }}"><a href="{{ $service['link'] }}"><i class="{{ $service['icon'] }}" title="{{ $name }}" /></i></li>
         @endforeach
       </ul>
     </div>

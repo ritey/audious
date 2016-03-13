@@ -31,6 +31,8 @@ Route::group(['middleware' => ['web']], function () {
     Route::get('soundcloud', 'SoundcloudController@logout');
     // Google logout route.
     Route::get('google', 'GoogleController@logout');
+    // Spotify logout route.
+    Route::get('spotify', 'SpotifyController@logout');
   });
 
   // API Callbacks for BackboneJS.

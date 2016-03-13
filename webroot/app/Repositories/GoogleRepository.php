@@ -48,7 +48,7 @@ class GoogleRepository
     ];
     return [
       'link' => 'https://accounts.google.com/o/oauth2/auth?' . http_build_query($params),
-      'image' => asset('img/google-sign-in.png'),
+      'icon' => 'fa fa-youtube-square',
     ];
   }
 

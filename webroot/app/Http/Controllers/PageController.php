@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use Njasm\Soundcloud\SoundcloudFacade;
 use App\Repositories\SoundcloudRepository;
 use App\Repositories\GoogleRepository;
+use App\Repositories\SpotifyRepository;
 use App\Song;
 
 class PageController extends Controller
@@ -27,6 +28,11 @@ class PageController extends Controller
    */
   protected $googleRepository;
 
+  /**
+   * The Spotify repository instance.
+   */
+  protected $spotifyRepository;
+
 
   /**
    * Create a controller instance.
@@ -34,10 +40,11 @@ class PageController extends Controller
    * @param  SoundcloudFacade  $soundcloud
    * @return void
    */
-  public function __construct(SoundcloudFacade $soundcloud, SoundcloudRepository $soundcloudRepository, GoogleRepository $googleRepository) {
+  public function __construct(SoundcloudFacade $soundcloud, SoundcloudRepository $soundcloudRepository, GoogleRepository $googleRepository, SpotifyRepository $spotifyRepository) {
     $this->soundcloud = $soundcloud;
     $this->soundcloudRepository = $soundcloudRepository;
     $this->googleRepository = $googleRepository;
+    $this->spotifyRepository = $spotifyRepository;
   }
 
   /**
@@ -50,6 +57,7 @@ class PageController extends Controller
       'services' => [
         'soundcloud' => $this->soundcloudRepository->getAuthLinks($request),
         'google' => $this->googleRepository->getAuthLinks($request),
+        'spotify' => $this->spotifyRepository->getAuthLinks($request)
       ]
     ]);
   }

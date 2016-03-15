@@ -3,40 +3,58 @@
 namespace App\Repositories;
 
 use Illuminate\Http\Request;
-use Njasm\Soundcloud\Soundcloud;
-use Njasm\Soundcloud\SoundcloudFacade;
+use GuzzleHttp\Client;
 
-class SoundcloudRepository extends Soundcloud
+class SoundcloudRepository
 {
   /**
-   * The Soundcloud instance.
+   * Guzzle object.
    */
-  protected $soundcloud;
+  protected $guzzle;
 
   /**
    * Pass Soundcloud API details up.
    */
-  public function __construct(SoundcloudFacade $soundcloud) {
+  /*public function __construct(SoundcloudFacade $soundcloud) {
     parent::__construct(env('SOUNDCLOUD_CLIENT_ID'), env('SOUNDCLOUD_CLIENT_SECRET'), env('SOUNDCLOUD_CALLBACK_URL'));
     $this->soundcloud = $soundcloud;
+  }*/
+  /**
+  * Pre-define common Guzzle params.
+  */
+  public function __construct(Request $request, $access_token = NULL) {
+    if (!$access_token) {
+      if (!$request->session()->has('services.soundcloud.access_token')) {
+        return;
+      }
+
+      $access_token = $request->session()->get('services.soundcloud.access_token');
+    }
+    //
+    $this->guzzle = new Client([
+      'base_uri' => 'https://api.soundcloud.com/',
+      'headers' => [
+        'Authorization' => "Bearer $access_token",
+      ],
+      'query' => [
+        'key' => $access_token,
+        'oauth_token' => $access_token,
+      ],
+    ]);
   }
 
   /**
    * Get user object.
    */
-  public function me($access_token) {
-    $this->get('/me', ['oauth_token' => $access_token]);
-    return $this->request()->bodyObject();
-  }
+  public function me() {
+    $response = $this->guzzle->request('GET', 'me');
 
-  /**
-   * Get user playlists.
-   * @param  integer $user_id      user id for which to fetch playlists.
-   * @param  string $access_token  authentication access_token.
-   */
-  public function playlists($user_id, $access_token) {
-    $this->get("/playlists/$user_id", ['oauth_token' => $access_token]);
-    return $this->request()->bodyObject();
+    // Check response status code.
+    if ($response->getStatusCode() != 200) {
+      return [];
+    }
+
+    return json_decode($response->getBody()->getContents());
   }
 
   /**
@@ -44,14 +62,47 @@ class SoundcloudRepository extends Soundcloud
    * @param  integer $user_id      user id for which to fetch playlists.
    * @param  string $access_token  authentication access_token.
    */
-  public function favorites($user_id, $access_token) {
-    $this->get("/users/$user_id/favorites", [
-      'oauth_token' => $access_token,
-      'q' => [
-        'streamable' => 1,
-      ],
-    ]);
-    return $this->request()->bodyObject();
+  public function getPlaylists($user_id) {
+    $playlists = [];
+
+    $playlists += $this->playlists($user_id);
+    $playlists['user_favorites'] = $this->favorites($user_id);
+
+    return $playlists;
+  }
+
+  /**
+   * Get user favorites.
+   */
+  private function favorites($user_id) {
+    $response = $this->guzzle->request('GET', "users/$user_id/favorites");
+
+    // Redirect to homepage if response status is not 200.
+    if ($response->getStatusCode() != 200) {
+      return [];
+    }
+
+    return json_decode($response->getBody()->getContents());
+  }
+
+  /**
+   * Return playlists
+   */
+  private function playlists($user_id) {
+    $response = $this->guzzle->request('GET', "users/$user_id/playlists");
+
+    // Redirect to homepage if response status is not 200.
+    if ($response->getStatusCode() != 200) {
+      return [];
+    }
+
+    $response = json_decode($response->getBody()->getContents());
+    $playlists = [];
+
+    foreach ($response as $v) {
+      $playlists[$v->permalink] = $v->tracks;
+    }
+    return $playlists;
   }
 
   /**
@@ -61,7 +112,12 @@ class SoundcloudRepository extends Soundcloud
     $soundcloud_link = url('/logout/soundcloud');
     // Show login link instead of logout.
     if (!$request->session()->has('services.soundcloud')) {
-      $soundcloud_link = $this->soundcloud->getAuthUrl();
+      $params = [
+        'client_id' => env('SOUNDCLOUD_CLIENT_ID'),
+        'redirect_uri' => env('SOUNDCLOUD_CALLBACK_URL'),
+        'response_type' => 'code',
+      ];
+      $soundcloud_link = 'https://soundcloud.com/connect?' . http_build_query($params);
     }
 
     return [

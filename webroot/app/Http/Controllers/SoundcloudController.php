@@ -6,8 +6,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
-use Njasm\Soundcloud\SoundcloudFacade;
 use App\Repositories\SoundcloudRepository;
+use GuzzleHttp\Client;
 
 class SoundcloudController extends Controller
 {
@@ -20,17 +20,6 @@ class SoundcloudController extends Controller
    * The Soundcloud repository instance.
    */
   protected $soundcloudRepository;
-
-  /**
-   * Create a controller instance.
-   *
-   * @param  SoundcloudFacade  $soundcloud
-   * @return void
-   */
-  public function __construct(SoundcloudFacade $soundcloud, SoundcloudRepository $soundcloudRepository) {
-    $this->soundcloud = $soundcloud;
-    $this->soundcloudRepository = $soundcloudRepository;
-  }
 
   /**
    * Get access_token from Soundcloud.
@@ -50,14 +39,15 @@ class SoundcloudController extends Controller
   }
 
   private function saveSession(Request $request, $access_token) {
+    $me = $this->soundcloudRepository->me();
     $data = [
       'soundcloud' => [
         'access_token' => $access_token,
-        'user' => $this->soundcloudRepository->me($access_token),
+        'user' => $me,
       ],
     ];
 
-    $data['soundcloud']['music']['favorites'] = $this->soundcloudRepository->favorites($data['soundcloud']['user']->id, $access_token);
+    $data['soundcloud']['music'] = $this->soundcloudRepository->getPlaylists($me->id, $access_token);
 
     // If first login.
     if (!$request->session()->has('services')) {
@@ -80,15 +70,33 @@ class SoundcloudController extends Controller
       return redirect('/');
     }
 
-    // Extract returned code.
-    $code = $request->code;
-    // Get access_token from code.
-    $access_token = $this->getAccessToken($code);
+    // Parse returned code.
+    $code = $request->get('code');
 
-    // Redirect to homepage if couldn't get access_token.
-    if (!$access_token) {
+    // Use Guzzle to form request.
+    $client = new Client();
+    // Get access_token.
+    $response = $client->request('POST', 'https://api.soundcloud.com/oauth2/token', [
+      'form_params' => [
+        'code'          => $code,
+        'client_id'     => env('SOUNDCLOUD_CLIENT_ID'),
+        'client_secret' => env('SOUNDCLOUD_CLIENT_SECRET'),
+        'redirect_uri'  => env('SOUNDCLOUD_CALLBACK_URL'),
+        'grant_type'    => 'authorization_code',
+      ],
+    ]);
+
+    // Redirect to homepage if response status is not 200.
+    if ($response->getStatusCode() != 200) {
       return redirect('/');
     }
+
+    // Parse access_token.
+    $response = json_decode($response->getBody()->getContents());
+    $access_token = $response->access_token;
+
+    //Init GoogleRepository after authentication when we have access_token.
+    $this->initSoundcloudRepository($request, $access_token);
 
     $this->saveSession($request, $access_token);
 
@@ -102,5 +110,9 @@ class SoundcloudController extends Controller
     // Delete Soundcloud session data.
     $request->session()->forget('services.soundcloud');
     return redirect('/');
+  }
+
+  private function initSoundcloudRepository($request, $access_token) {
+    $this->soundcloudRepository = new SoundcloudRepository($request, $access_token);
   }
 }

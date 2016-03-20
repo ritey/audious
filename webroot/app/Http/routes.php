@@ -15,6 +15,9 @@ Route::group(['middleware' => ['web']], function () {
   // Homepage.
   Route::get('/', 'PageController@index');
 
+  // Authentication Routes...
+  Route::auth();
+
   // Login routes.
   Route::group(['prefix' => 'login'], function() {
     // Soundcloud login route.

@@ -51,6 +51,7 @@ class PageController extends Controller
    * Homepage
    */
   public function index(Request $request) {
+    print_r($request->session()->get('services'));
     return view('homepage', [
       'client_id' => env('SOUNDCLOUD_CLIENT_ID'),
       'redirect_uri' => env('SOUNDCLOUD_CALLBACK_URL'),

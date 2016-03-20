@@ -4,8 +4,6 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="client_id" content="{{ $client_id }}">
-    <meta name="redirect_uri" content="{{ $redirect_uri }}">
     <title>Audious</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="{{ elixir('css/app.css') }}">
@@ -17,6 +15,14 @@
 
       <!-- Header -->
       <header>
+        <ul>
+          @if (Auth::guest())
+            <li><a href="{{ url('/login') }}">Login</a></li>
+            <li><a href="{{ url('/register') }}">Register</a></li>
+          @else
+            <li>Welcome, {{ Auth::user()->name }} (<a href="{{ url('/logout') }}">Logout</a>)</li>
+          @endif
+        </ul>
         @yield('header')
       </header>
       <!-- End of Header -->

@@ -23,4 +23,11 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    /**
+     * Get all of the services for the user.
+     */
+    public function services() {
+      return $this->hasMany(Service::class);
+    }
 }

@@ -24,6 +24,10 @@ class Song extends Model
     return $this->belongsTo(Playlist::class);
   }
 
+  public function user() {
+    return $this->belongsTo(User::class);
+  }
+
   /**
    * Returns all songs from a given provider and playlist
    * @param  string $provider Soundcloud, Youtube etc.

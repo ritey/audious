@@ -4,7 +4,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.AppView = undefined;
+exports.AppView = exports.App = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -16,18 +16,34 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } //import Marionette from 'backbone.marionette';
+
 
 var _Backbone = Backbone;
 var Model = _Backbone.Model;
 var View = _Backbone.View;
 var Collection = _Backbone.Collection;
 var Router = _Backbone.Router;
-var LocalStorage = _Backbone.LocalStorage;
-
+var _Marionette = Marionette;
+var Application = _Marionette.Application;
 // Global Songs collection variable.
 
 var Songs = new _SongCollection.SongList();
+
+var App = exports.App = function (_Application) {
+  _inherits(App, _Application);
+
+  function App() {
+    _classCallCheck(this, App);
+
+    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(App).call(this));
+
+    console.log('hello, Marionette');
+    return _this;
+  }
+
+  return App;
+}(Application);
 
 var AppView = exports.AppView = function (_View) {
   _inherits(AppView, _View);
@@ -35,22 +51,23 @@ var AppView = exports.AppView = function (_View) {
   function AppView() {
     _classCallCheck(this, AppView);
 
-    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(AppView).call(this));
+    var _this2 = _possibleConstructorReturn(this, Object.getPrototypeOf(AppView).call(this));
 
-    _this.$el = $('#app');
-    _this.soundcloudReady = false;
+    _this2.$el = $('#app');
+    _this2.$sync = $('#sync');
+
+    _this2.soundcloudReady = false;
 
     // Authorise Soundcloud SDK.
-    _this.authorise();
+    _this2.authorise();
 
     // Event when all songs are added. Runs on startup.
-    _this.listenTo(Songs, 'reset', _this.addAll);
-    _this.listenTo(Songs, 'play', _this.play);
+    _this2.listenTo(Songs, 'reset', _this2.addAll);
 
     // Populate Songs collection with static data provided by server in data var.
     //Songs.reset(data, {parse: true});
     Songs.fetch();
-    return _this;
+    return _this2;
   }
 
   /**
@@ -60,9 +77,7 @@ var AppView = exports.AppView = function (_View) {
 
   _createClass(AppView, [{
     key: 'render',
-    value: function render() {
-      if (Songs.length) {}
-    }
+    value: function render() {}
 
     /**
      * Display all songs.
@@ -101,16 +116,6 @@ var AppView = exports.AppView = function (_View) {
       });
 
       this.soundcloudReady = true;
-    }
-
-    /**
-     * Play song.
-     */
-
-  }, {
-    key: 'play',
-    value: function play() {
-      if (this.soundcloudReady) {}
     }
   }]);
 
@@ -185,7 +190,8 @@ var _app = require('./app');
  * Document ready event
  */
 $(function () {
-  new _app.AppView();
+  //new AppView();
+  new _app.App();
 }); /**
      * ES6
      * ref:

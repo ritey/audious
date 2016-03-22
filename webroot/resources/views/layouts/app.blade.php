@@ -15,7 +15,7 @@
 
       <!-- Header -->
       <header>
-        <ul>
+        <ul class="user-auth-links">
           @if (Auth::guest())
             <li><a href="{{ url('/login') }}">Login</a></li>
             <li><a href="{{ url('/register') }}">Register</a></li>
@@ -23,6 +23,16 @@
             <li>Welcome, {{ Auth::user()->name }} (<a href="{{ url('/logout') }}">Logout</a>)</li>
           @endif
         </ul>
+
+        @if (!Auth::guest())
+            <ul id="sync">
+                <li class="label">Sync with: </li>
+                @foreach ($services as $name => $service)
+                  <li class="sync-service {{ $name }}"><a href="{{ $service['link'] }}"><i class="{{ $service['icon'] }}" title="{{ $name }}" /></i></a></li>
+                @endforeach
+            </ul>
+        @endif
+
         @yield('header')
       </header>
       <!-- End of Header -->
@@ -44,7 +54,8 @@
     <script src="https://connect.soundcloud.com/sdk/sdk-3.0.0.js"></script>
     <script src="http://underscorejs.org/underscore-min.js" type="text/javascript"></script>
     <script src="http://backbonejs.org/backbone-min.js" type="text/javascript"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/backbone-localstorage.js/1.1.16/backbone.localStorage-min.js" type="text/javascript"></script>
+    <script src="http://marionettejs.com/downloads/backbone.marionette.min.js" type="text/javascript"></script>
+    <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/backbone-localstorage.js/1.1.16/backbone.localStorage-min.js" type="text/javascript"></script>-->
     <script src="{{ elixir('js/main.js') }}" type="text/javascript"></script>
   </body>
 </html>

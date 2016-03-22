@@ -14,9 +14,16 @@ class Service extends Model
   protected $fillable = ['name'];
 
   /**
+   * Indicates if the model should be timestamped.
+   *
+   * @var bool
+   */
+  public $timestamps = false;
+
+  /**
    * Get all user playlists for the service.
    */
-  public function playlists() {
+  public function playlist() {
     return $this->hasMany(Playlist::class);
   }
 

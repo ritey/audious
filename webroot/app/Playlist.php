@@ -16,7 +16,7 @@ class Playlist extends Model
   /**
    * Get all user songs in a playlist.
    */
-  public function songs() {
+  public function song() {
     return $this->hasMany(Song::class);
   }
 

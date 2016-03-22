@@ -109,20 +109,25 @@ class SoundcloudRepository
    * Return login/logout link and corresponding image.
    */
   public function getAuthLinks(Request $request) {
-    $soundcloud_link = url('/logout/soundcloud');
-    // Show login link instead of logout.
-    if (!$request->session()->has('services.soundcloud')) {
-      $params = [
-        'client_id' => env('SOUNDCLOUD_CLIENT_ID'),
-        'redirect_uri' => env('SOUNDCLOUD_CALLBACK_URL'),
-        'response_type' => 'code',
-      ];
-      $soundcloud_link = 'https://soundcloud.com/connect?' . http_build_query($params);
+    $icon = 'fa fa-soundcloud';
+    $icon_replacement = 'fa-refresh fa-spin';
+    $params = [
+      'client_id' => env('SOUNDCLOUD_CLIENT_ID'),
+      'redirect_uri' => env('SOUNDCLOUD_CALLBACK_URL'),
+      'response_type' => 'code',
+    ];
+    $soundcloud_link = 'https://soundcloud.com/connect?' . http_build_query($params);
+
+    // Change icon if we need to sync music.
+    if ($request->session()->has('services.soundcloud')) {
+      $icon = 'fa fa-refresh fa-spin';
+      $icon_replacement = 'fa fa-soundcloud';
     }
 
     return [
       'link' => $soundcloud_link,
-      'icon' => 'fa fa-soundcloud',
+      'icon' => $icon,
+      'icon_replacement' => $icon_replacement,
     ];
   }
 }

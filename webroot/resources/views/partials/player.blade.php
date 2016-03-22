@@ -5,6 +5,6 @@
     <button class="stop">Stop</button>
     <button class="previous">Previous</button>
     <button class="next">Next</button>
-  </ul>
+  </div>
 </section>
 <!-- Endof Music Player Structure -->

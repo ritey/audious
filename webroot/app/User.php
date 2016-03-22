@@ -27,7 +27,7 @@ class User extends Authenticatable
     /**
      * Get all of the services for the user.
      */
-    public function services() {
-      return $this->hasMany(Service::class);
+    public function song() {
+      return $this->hasMany(Song::class);
     }
 }

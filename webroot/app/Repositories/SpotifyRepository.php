@@ -38,7 +38,6 @@ class SpotifyRepository
    * Return login/logout link and corresponding icon.
    */
   public function getAuthLinks(Request $request) {
-    $link = url('/logout/spotify');
     // Show login link instead of logout.
     if (!$request->session()->has('services.spotify')) {
       $params = [

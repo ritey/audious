@@ -1,10 +1,20 @@
+//import Marionette from 'backbone.marionette';
 import { SongList } from './collections/SongCollection';
 import { SongView } from './views/SongView';
 
-var { Model, View, Collection, Router, LocalStorage } = Backbone;
-
+var { Model, View, Collection, Router } = Backbone;
+var { Application } = Marionette;
 // Global Songs collection variable.
 var Songs = new SongList();
+
+//http://marionettejs.com/docs/v3.0.0-pre.2/marionette.application.html#getting-started
+export class App extends Application
+{
+  constructor() {
+    super();
+    console.log('hello, Marionette');
+  }
+}
 
 export class AppView extends View
 {
@@ -12,6 +22,8 @@ export class AppView extends View
     super();
 
     this.$el = $('#app');
+    this.$sync = $('#sync');
+
     this.soundcloudReady = false;
 
     // Authorise Soundcloud SDK.
@@ -19,7 +31,6 @@ export class AppView extends View
 
     // Event when all songs are added. Runs on startup.
     this.listenTo(Songs, 'reset', this.addAll);
-    this.listenTo(Songs, 'play', this.play);
 
     // Populate Songs collection with static data provided by server in data var.
     //Songs.reset(data, {parse: true});
@@ -30,9 +41,7 @@ export class AppView extends View
    * Render App.
    */
   render() {
-    if (Songs.length) {
 
-    }
   }
 
   /**
@@ -63,15 +72,5 @@ export class AppView extends View
     });
 
     this.soundcloudReady = true;
-  }
-
-  /**
-   * Play song.
-   */
-  play() {
-    if (this.soundcloudReady)
-    {
-
-    }
   }
 }

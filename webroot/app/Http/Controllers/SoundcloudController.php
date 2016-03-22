@@ -43,11 +43,11 @@ class SoundcloudController extends Controller
     $data = [
       'soundcloud' => [
         'access_token' => $access_token,
-        'user' => $me,
+        'user' => $me
       ],
     ];
 
-    $data['soundcloud']['music'] = $this->soundcloudRepository->getPlaylists($me->id, $access_token);
+    //$data['soundcloud']['music'] = $this->soundcloudRepository->getPlaylists($me->id, $access_token);
 
     // If first login.
     if (!$request->session()->has('services')) {
@@ -100,15 +100,6 @@ class SoundcloudController extends Controller
 
     $this->saveSession($request, $access_token);
 
-    return redirect('/');
-  }
-
-  /**
-   * Soundcloud logout link.
-   */
-  public function logout(Request $request) {
-    // Delete Soundcloud session data.
-    $request->session()->forget('services.soundcloud');
     return redirect('/');
   }
 

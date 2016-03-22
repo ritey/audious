@@ -23,11 +23,12 @@
  * http://ricostacruz.com/backbone-patterns/index.html
  */
 
-import { AppView } from './app';
+import { AppView, App } from './app';
 
 /**
  * Document ready event
  */
 $(() => {
-  new AppView();
+  //new AppView();
+  new App();
 });

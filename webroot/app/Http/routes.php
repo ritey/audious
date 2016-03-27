@@ -32,5 +32,7 @@ Route::group(['middleware' => ['web']], function () {
   Route::group(['prefix' => 'api'], function () {
     // Return all songs.
     Route::get('songs', 'ApiController@index');
+    // Sync music.
+    Route::get('sync/{service}', 'ApiController@sync');
   });
 });

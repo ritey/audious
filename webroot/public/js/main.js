@@ -12,11 +12,15 @@ var _SongCollection = require('./collections/SongCollection');
 
 var _SongView = require('./views/SongView');
 
+var _SyncCollection = require('./collections/SyncCollection');
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } //import Marionette from 'backbone.marionette';
+
+//import { SyncView } from './views/SyncView';
 
 
 var _Backbone = Backbone;
@@ -30,6 +34,8 @@ var Application = _Marionette.Application;
 
 var Songs = new _SongCollection.SongList();
 
+//http://marionettejs.com/docs/v3.0.0-pre.2/marionette.application.html#getting-started
+
 var App = exports.App = function (_Application) {
   _inherits(App, _Application);
 
@@ -38,6 +44,13 @@ var App = exports.App = function (_Application) {
 
     var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(App).call(this));
 
+    _this.addRegions({
+      syncRegion: "#sync"
+    });
+
+    _this.syncCollection = new _SyncCollection.SyncCollection();
+    //var syncView = new SyncView();
+    console.log(_this.syncCollection);
     console.log('hello, Marionette');
     return _this;
   }
@@ -122,7 +135,7 @@ var AppView = exports.AppView = function (_View) {
   return AppView;
 }(View);
 
-},{"./collections/SongCollection":2,"./views/SongView":6}],2:[function(require,module,exports){
+},{"./collections/SongCollection":2,"./collections/SyncCollection":3,"./views/SongView":8}],2:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -181,7 +194,75 @@ var SongList = exports.SongList = function (_Collection) {
   return SongList;
 }(Collection);
 
-},{"../models/Song":4}],3:[function(require,module,exports){
+},{"../models/Song":5}],3:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.SyncCollection = undefined;
+
+var _Sync = require('../models/Sync');
+
+var _SyncView = require('../views/SyncView');
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var _Backbone = Backbone;
+var Collection = _Backbone.Collection;
+
+var SyncCollection = exports.SyncCollection = function (_Collection) {
+  _inherits(SyncCollection, _Collection);
+
+  function SyncCollection() {
+    _classCallCheck(this, SyncCollection);
+
+    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(SyncCollection).call(this));
+
+    console.log('SyncCollection constructor');
+
+    _this.model = _Sync.Sync;
+
+    _.each($('#sync li'), function (a) {
+      if ($(a).hasClass('label')) {
+        return;
+      }
+
+      var $icon_elem = $(a).find('i'),
+          sync = new _Sync.Sync();
+
+      sync.set({
+        icon: $icon_elem.attr('class'),
+        icon_replace: $icon_elem.attr('data-icon-replace'),
+        link: $(a).children().attr('href'),
+        name: $icon_elem.attr('title')
+      });
+
+      var syncView = new _SyncView.SyncView({
+        model: sync,
+        el: a
+      });
+
+      // Check if need to sync service.
+      if (_.indexOf(sync.get('icon').split(' '), 'fa-spin') != -1) {
+        console.log('needs sync');
+        sync.doSync();
+      }
+
+      // Add this new model to the collection
+      this.add(sync);
+    }, _this);
+    return _this;
+  }
+
+  return SyncCollection;
+}(Collection);
+
+},{"../models/Sync":6,"../views/SyncView":9}],4:[function(require,module,exports){
 'use strict';
 
 var _app = require('./app');
@@ -217,7 +298,7 @@ $(function () {
      * http://ricostacruz.com/backbone-patterns/index.html
      */
 
-},{"./app":1}],4:[function(require,module,exports){
+},{"./app":1}],5:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -291,7 +372,67 @@ var Song = exports.Song = function (_Model) {
   return Song;
 }(Model);
 
-},{}],5:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var _Backbone = Backbone;
+var Model = _Backbone.Model;
+
+/**
+ * Sync Model.
+ */
+
+var Sync = exports.Sync = function (_Model) {
+  _inherits(Sync, _Model);
+
+  function Sync() {
+    _classCallCheck(this, Sync);
+
+    return _possibleConstructorReturn(this, Object.getPrototypeOf(Sync).apply(this, arguments));
+  }
+
+  _createClass(Sync, [{
+    key: 'defaults',
+    value: function defaults() {
+      return {
+        name: '',
+        icon: '',
+        icon_replace: '',
+        link: ''
+      };
+    }
+  }, {
+    key: 'doSync',
+    value: function doSync() {
+      Backbone.ajax({
+        dataType: "json",
+        url: "/api/sync/" + this.get('name'),
+        data: "",
+        success: function success(val) {
+          //collection.add(val);  //or reset
+          //console.log(collection);
+          console.log(val);
+        }
+      });
+    }
+  }]);
+
+  return Sync;
+}(Model);
+
+},{}],7:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -302,7 +443,7 @@ Object.defineProperty(exports, "__esModule", {
  */
 var SONG_LI_TPL = exports.SONG_LI_TPL = _.template("<span class='title'><%= title %></span>" + "<button class='play'>Play</button>");
 
-},{}],6:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -373,6 +514,62 @@ var SongView = exports.SongView = function (_View) {
   return SongView;
 }(View);
 
-},{"../templates/song_li.tpl":5}]},{},[3]);
+},{"../templates/song_li.tpl":7}],9:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var _Marionette = Marionette;
+var View = _Marionette.View;
+//import { SyncCollection } from '../collections/SyncCollection';
+
+var SyncView = exports.SyncView = function (_View) {
+  _inherits(SyncView, _View);
+
+  function SyncView(options) {
+    _classCallCheck(this, SyncView);
+
+    console.log('SyncView constructor');
+    console.log(options);
+
+    options.tagName = 'li';
+
+    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(SyncView).call(this, options));
+
+    console.log(_this);
+    // fix context issues
+    //_.bindAll(this, 'doSync', 'render');
+    //this.listenTo(Songs, 'reset', this.addAll);
+    return _this;
+  }
+
+  _createClass(SyncView, [{
+    key: 'doSync',
+    value: function doSync() {
+      console.log('z?');
+      this.model.doSync();
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      $(this.el).html('TEST');
+      return this;
+    }
+  }]);
+
+  return SyncView;
+}(View);
+
+},{}]},{},[4]);
 
 //# sourceMappingURL=main.js.map

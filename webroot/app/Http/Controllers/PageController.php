@@ -70,8 +70,8 @@ class PageController extends Controller
       'redirect_uri' => env('SOUNDCLOUD_CALLBACK_URL'),
       'services' => [
         'soundcloud' => $this->soundcloudRepository->getAuthLinks($request),
-        'google' => $this->googleRepository->getAuthLinks($request),
-        'spotify' => $this->spotifyRepository->getAuthLinks($request)
+        //'google' => $this->googleRepository->getAuthLinks($request),
+        //'spotify' => $this->spotifyRepository->getAuthLinks($request)
       ]
     ]);
   }

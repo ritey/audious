@@ -13,4 +13,8 @@ class ApiController extends Controller
   public function index(Request $request) {
     return response()->json(Song::all());
   }
+
+  public function sync(Request $request, $service) {
+    return response()->json($service);
+  }
 }

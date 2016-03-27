@@ -1,6 +1,8 @@
 //import Marionette from 'backbone.marionette';
 import { SongList } from './collections/SongCollection';
 import { SongView } from './views/SongView';
+//import { SyncView } from './views/SyncView';
+import { SyncCollection } from './collections/SyncCollection';
 
 var { Model, View, Collection, Router } = Backbone;
 var { Application } = Marionette;
@@ -12,6 +14,13 @@ export class App extends Application
 {
   constructor() {
     super();
+    this.addRegions({
+      syncRegion: "#sync"
+    });
+
+    this.syncCollection = new SyncCollection();
+    //var syncView = new SyncView();
+    console.log(this.syncCollection);
     console.log('hello, Marionette');
   }
 }

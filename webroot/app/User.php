@@ -24,10 +24,7 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
-    /**
-     * Get all of the services for the user.
-     */
-    public function song() {
-      return $this->hasMany(Song::class);
+    public function playlists() {
+        return $this->hasMany(Playlist::class);
     }
 }

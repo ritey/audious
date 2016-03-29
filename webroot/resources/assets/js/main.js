@@ -29,6 +29,6 @@ import { AppView, App } from './app';
  * Document ready event
  */
 $(() => {
-  //new AppView();
-  new App();
+  new AppView();
+  //new App();
 });

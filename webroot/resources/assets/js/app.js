@@ -6,11 +6,12 @@ import { SyncCollection } from './collections/SyncCollection';
 
 var { Model, View, Collection, Router } = Backbone;
 var { Application } = Marionette;
+
 // Global Songs collection variable.
 var Songs = new SongList();
 
 //http://marionettejs.com/docs/v3.0.0-pre.2/marionette.application.html#getting-started
-export class App extends Application
+/*export class App extends Application
 {
   constructor() {
     super();
@@ -23,7 +24,7 @@ export class App extends Application
     console.log(this.syncCollection);
     console.log('hello, Marionette');
   }
-}
+}*/
 
 export class AppView extends View
 {
@@ -36,7 +37,12 @@ export class AppView extends View
     this.soundcloudReady = false;
 
     // Authorise Soundcloud SDK.
-    this.authorise();
+    if ($("meta[name='soundcloud_client_id']").length) {
+      this.authorise();
+    }
+
+    // Sync music if needed.
+    this.syncAllMusic();
 
     // Event when all songs are added. Runs on startup.
     this.listenTo(Songs, 'reset', this.addAll);
@@ -54,10 +60,42 @@ export class AppView extends View
   }
 
   /**
+   * Sync all music.
+   */
+  syncAllMusic() {
+    var context = this;
+    // Check if there is any refresh icons.
+    if ($('#sync i.fa-refresh').length) {
+      // Found refresh icon - sync.
+      $('#sync i.fa-refresh').each(function() {
+        context.syncMusic($(this).parents('li.sync-service'));
+      });
+    }
+  }
+
+  /**
+   * Sync service music
+   * @param  jQuery obj $elem
+   */
+  syncMusic($elem) {
+    var title = $elem.attr('data-service-title');
+    Backbone.ajax({
+      dataType: "json",
+      url: "/api/sync/" + title,
+      data: "",
+      success: function(val){
+        //collection.add(val);  //or reset
+        //console.log(collection);
+        console.log(val);
+      }
+    });
+  }
+
+  /**
    * Display all songs.
    */
   addAll() {
-    this.$('#playlist').html('');
+    //this.$('#playlist').html('');
     // Iterate through songs and add each to html.
     Songs.each(this.addOne, this);
   }
@@ -76,8 +114,8 @@ export class AppView extends View
    */
   authorise() {
     SC.initialize({
-      client_id: document.querySelector("meta[name='client_id']").getAttribute('content'),
-      redirect_uri: document.querySelector("meta[name='redirect_uri']").getAttribute('content')
+      client_id: $("meta[name='soundcloud_client_id']").getAttribute('content'),
+      redirect_uri: $("meta[name='soundcloud_redirect_uri']").getAttribute('content')
     });
 
     this.soundcloudReady = true;

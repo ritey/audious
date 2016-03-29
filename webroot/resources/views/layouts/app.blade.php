@@ -28,7 +28,7 @@
             <ul id="sync">
                 <li class="label">Sync with: </li>
                 @foreach ($services as $name => $service)
-                  <li class="sync-service {{ $name }}"><a href="{{ $service['link'] }}"><i class="{{ $service['icon'] }}" data-icon-replace="{{ $service['icon_replacement'] }}" title="{{ $name }}" /></i></a></li>
+                  <li class="sync-service" data-service-title="{{ $name }}"><a href="{{ $service['link'] }}"><i class="{{ $service['icon'] }}" data-icon-replace="{{ $service['icon_replacement'] }}" title="{{ $name }}" /></i></a></li>
                 @endforeach
             </ul>
         @endif

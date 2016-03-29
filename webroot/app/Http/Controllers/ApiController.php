@@ -14,7 +14,18 @@ class ApiController extends Controller
     return response()->json(Song::all());
   }
 
+  /**
+   * Sync music.
+   * @param  Request $request
+   * @param  String  $service
+   * @return json array of new tracks.
+   */
   public function sync(Request $request, $service) {
-    return response()->json($service);
+    // Construct namespace to init service container.
+    $service = 'App\\Repositories\\' . ucfirst($service) . 'Repository';
+    $service = new $service($request);
+    // sync music and return new tracks.
+    $new_tracks = $service->sync($request);
+    return response()->json($new_tracks);
   }
 }

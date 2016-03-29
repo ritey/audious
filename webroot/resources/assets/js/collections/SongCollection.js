@@ -1,6 +1,6 @@
 import { Song } from '../models/Song';
 
-var { Collection, LocalStorage } = Backbone;
+var { Collection } = Backbone;
 
 /**
  * Song Collection

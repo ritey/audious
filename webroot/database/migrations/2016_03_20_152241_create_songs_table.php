@@ -19,7 +19,6 @@ class CreateSongsTable extends Migration
             $table->increments('id');
             $table->timestamps();
 
-            $table->integer('user_id')->index();
             $table->integer('service_id')->index();
             $table->integer('playlist_id')->index();
             $table->string('title');

@@ -4,7 +4,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.AppView = exports.App = undefined;
+exports.AppView = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -30,33 +30,26 @@ var Collection = _Backbone.Collection;
 var Router = _Backbone.Router;
 var _Marionette = Marionette;
 var Application = _Marionette.Application;
+
 // Global Songs collection variable.
 
 var Songs = new _SongCollection.SongList();
 
 //http://marionettejs.com/docs/v3.0.0-pre.2/marionette.application.html#getting-started
-
-var App = exports.App = function (_Application) {
-  _inherits(App, _Application);
-
-  function App() {
-    _classCallCheck(this, App);
-
-    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(App).call(this));
-
-    _this.addRegions({
+/*export class App extends Application
+{
+  constructor() {
+    super();
+    this.addRegions({
       syncRegion: "#sync"
     });
 
-    _this.syncCollection = new _SyncCollection.SyncCollection();
+    this.syncCollection = new SyncCollection();
     //var syncView = new SyncView();
-    console.log(_this.syncCollection);
+    console.log(this.syncCollection);
     console.log('hello, Marionette');
-    return _this;
   }
-
-  return App;
-}(Application);
+}*/
 
 var AppView = exports.AppView = function (_View) {
   _inherits(AppView, _View);
@@ -64,23 +57,28 @@ var AppView = exports.AppView = function (_View) {
   function AppView() {
     _classCallCheck(this, AppView);
 
-    var _this2 = _possibleConstructorReturn(this, Object.getPrototypeOf(AppView).call(this));
+    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(AppView).call(this));
 
-    _this2.$el = $('#app');
-    _this2.$sync = $('#sync');
+    _this.$el = $('#app');
+    _this.$sync = $('#sync');
 
-    _this2.soundcloudReady = false;
+    _this.soundcloudReady = false;
 
     // Authorise Soundcloud SDK.
-    _this2.authorise();
+    if ($("meta[name='soundcloud_client_id']").length) {
+      _this.authorise();
+    }
+
+    // Sync music if needed.
+    _this.syncAllMusic();
 
     // Event when all songs are added. Runs on startup.
-    _this2.listenTo(Songs, 'reset', _this2.addAll);
+    _this.listenTo(Songs, 'reset', _this.addAll);
 
     // Populate Songs collection with static data provided by server in data var.
     //Songs.reset(data, {parse: true});
     Songs.fetch();
-    return _this2;
+    return _this;
   }
 
   /**
@@ -93,13 +91,52 @@ var AppView = exports.AppView = function (_View) {
     value: function render() {}
 
     /**
+     * Sync all music.
+     */
+
+  }, {
+    key: 'syncAllMusic',
+    value: function syncAllMusic() {
+      var context = this;
+      // Check if there is any refresh icons.
+      if ($('#sync i.fa-refresh').length) {
+        // Found refresh icon - sync.
+        $('#sync i.fa-refresh').each(function () {
+          context.syncMusic($(this).parents('li.sync-service'));
+        });
+      }
+    }
+
+    /**
+     * Sync service music
+     * @param  jQuery obj $elem
+     */
+
+  }, {
+    key: 'syncMusic',
+    value: function syncMusic($elem) {
+      console.log($elem);
+      var title = $elem.attr('data-service-title');
+      Backbone.ajax({
+        dataType: "json",
+        url: "/api/sync/" + title,
+        data: "",
+        success: function success(val) {
+          //collection.add(val);  //or reset
+          //console.log(collection);
+          console.log(val);
+        }
+      });
+    }
+
+    /**
      * Display all songs.
      */
 
   }, {
     key: 'addAll',
     value: function addAll() {
-      this.$('#playlist').html('');
+      //this.$('#playlist').html('');
       // Iterate through songs and add each to html.
       Songs.each(this.addOne, this);
     }
@@ -124,8 +161,8 @@ var AppView = exports.AppView = function (_View) {
     key: 'authorise',
     value: function authorise() {
       SC.initialize({
-        client_id: document.querySelector("meta[name='client_id']").getAttribute('content'),
-        redirect_uri: document.querySelector("meta[name='redirect_uri']").getAttribute('content')
+        client_id: $("meta[name='soundcloud_client_id']").getAttribute('content'),
+        redirect_uri: $("meta[name='soundcloud_redirect_uri']").getAttribute('content')
       });
 
       this.soundcloudReady = true;
@@ -155,7 +192,6 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var _Backbone = Backbone;
 var Collection = _Backbone.Collection;
-var LocalStorage = _Backbone.LocalStorage;
 
 /**
  * Song Collection
@@ -271,8 +307,8 @@ var _app = require('./app');
  * Document ready event
  */
 $(function () {
-  //new AppView();
-  new _app.App();
+  new _app.AppView();
+  //new App();
 }); /**
      * ES6
      * ref:

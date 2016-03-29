@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
+use App\Playlist;
 
 class SoundcloudRepository
 {
@@ -12,6 +13,10 @@ class SoundcloudRepository
    */
   protected $guzzle;
 
+  /**
+   * Access token.
+   */
+  protected $access_token;
   /**
    * Pass Soundcloud API details up.
    */
@@ -30,7 +35,10 @@ class SoundcloudRepository
 
       $access_token = $request->session()->get('services.soundcloud.access_token');
     }
-    //
+
+    // Save access token.
+    $this->access_token = $access_token;
+
     $this->guzzle = new Client([
       'base_uri' => 'https://api.soundcloud.com/',
       'headers' => [
@@ -129,5 +137,30 @@ class SoundcloudRepository
       'icon' => $icon,
       'icon_replacement' => $icon_replacement,
     ];
+  }
+
+  /**
+   * Sync tracks.
+   */
+  public function sync(Request $request) {
+    //$user_id = null;
+    $user = $request->session()->get('services.soundcloud.user');
+    if (!$user) {
+      return [];
+    }
+
+    $all_music = $this->getPlaylists($user->id);
+    $new_music = $this->syncUpdate($request, $all_music);
+    return $all_music;
+  }
+
+  /**
+   * Save new tracks to db.
+   */
+  private function syncUpdate($request, $all_music) {
+    foreach ($all_music as $name => $playlist) {
+      // Save playlist.
+      $palylist = $request->user()->playlists()->create(['name' => $name]);
+    }
   }
 }

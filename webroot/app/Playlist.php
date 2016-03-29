@@ -14,6 +14,11 @@ class Playlist extends Model
   protected $fillable = ['name'];
 
   /**
+   * Indicates if the model should be timestamped.
+   */
+  public $timestamps = false;
+
+  /**
    * Get all user songs in a playlist.
    */
   public function song() {

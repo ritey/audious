@@ -22,10 +22,10 @@ class ApiController extends Controller
    */
   public function sync(Request $request, $service) {
     // Construct namespace to init service container.
-    $service = 'App\\Repositories\\' . ucfirst($service) . 'Repository';
-    $service = new $service($request);
+    $service_obj = 'App\\Repositories\\' . ucfirst($service) . 'Repository';
+    $service_obj = new $service_obj($request);
     // sync music and return new tracks.
-    $new_tracks = $service->sync($request);
+    $new_tracks = $service_obj->sync($request, $service);
     return response()->json($new_tracks);
   }
 }

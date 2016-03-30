@@ -5,6 +5,8 @@ namespace App\Repositories;
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
 use App\Playlist;
+use App\Service;
+use DB;
 
 class SoundcloudRepository
 {
@@ -142,25 +144,29 @@ class SoundcloudRepository
   /**
    * Sync tracks.
    */
-  public function sync(Request $request) {
+  public function sync(Request $request, $service) {
     //$user_id = null;
     $user = $request->session()->get('services.soundcloud.user');
     if (!$user) {
       return [];
     }
 
+    $service_id = Service::id($service)->id;
     $all_music = $this->getPlaylists($user->id);
-    $new_music = $this->syncUpdate($request, $all_music);
+    $new_music = $this->syncUpdate($request, $service_id, $all_music);
     return $all_music;
   }
 
   /**
    * Save new tracks to db.
    */
-  private function syncUpdate($request, $all_music) {
+  private function syncUpdate($request, $service_id, $all_music) {
     foreach ($all_music as $name => $playlist) {
       // Save playlist.
-      $palylist = $request->user()->playlists()->create(['name' => $name]);
+      $palylist = $request->user()->playlists()->create([
+        'name' => $name,
+        'service_id' => $service_id
+      ]);
     }
   }
 }

@@ -11,7 +11,7 @@ class Playlist extends Model
    *
    * @var array
    */
-  protected $fillable = ['name'];
+  protected $fillable = ['name', 'service_id'];
 
   /**
    * Indicates if the model should be timestamped.

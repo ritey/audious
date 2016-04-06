@@ -7,6 +7,7 @@ use GuzzleHttp\Client;
 use App\Playlist;
 use App\Service;
 use DB;
+use Auth;
 
 class SoundcloudRepository
 {
@@ -19,6 +20,7 @@ class SoundcloudRepository
    * Access token.
    */
   protected $access_token;
+
   /**
    * Pass Soundcloud API details up.
    */
@@ -151,22 +153,24 @@ class SoundcloudRepository
       return [];
     }
 
-    $service_id = Service::id($service)->id;
+    $service = Service::id($service);
     $all_music = $this->getPlaylists($user->id);
-    $new_music = $this->syncUpdate($request, $service_id, $all_music);
+    $new_music = $this->syncUpdate($request, $service, $all_music);
     return $all_music;
   }
 
   /**
    * Save new tracks to db.
    */
-  private function syncUpdate($request, $service_id, $all_music) {
+  private function syncUpdate($request, $service, $all_music) {
     foreach ($all_music as $name => $playlist) {
+      print_r(Auth::user()->getPlaylist($playlist));
       // Save playlist.
       $palylist = $request->user()->playlists()->create([
         'name' => $name,
-        'service_id' => $service_id
+        'service_id' => $service->id
       ]);
     }
   }
+
 }

@@ -163,13 +163,14 @@ class SoundcloudRepository
    * Save new tracks to db.
    */
   private function syncUpdate($request, $service, $all_music) {
-    foreach ($all_music as $name => $playlist) {
-      print_r(Auth::user()->getPlaylist($playlist));
-      // Save playlist.
-      $palylist = $request->user()->playlists()->create([
-        'name' => $name,
-        'service_id' => $service->id
-      ]);
+    foreach ($all_music as $playlist_name => $tracks) {
+      // If playlist not in DB - add.
+      if (empty(Auth::user()->getPlaylist($playlist_name, ucfirst($service->name)))) {
+        $palylist = Auth::user()->playlists()->create([
+          'name' => $playlist_name,
+          'service_id' => $service->id
+        ]);
+      }
     }
   }
 

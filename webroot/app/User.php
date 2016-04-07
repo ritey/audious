@@ -33,11 +33,16 @@ class User extends Authenticatable
   }
 
 
-  public function getPlaylist($playlist) {
-    print_r($this->playlists()->get());die;
-    $res = $this->playlists()
-      ->with('services')
-      ->get();
-    print_r($res);die;
+  public function getPlaylist($playlist, $service_name) {
+    return $this->playlists()
+      ->where('playlists.name', $playlist)
+      ->join('services', 'services.id', '=', 'playlists.service_id')
+      ->where('services.name', $service_name)
+      ->first();
+      // following kind of works.
+      //Iit attached service object but does not filter, if service not available.
+      /*->with(['service' => function($query) use ($service_name) {
+        $query->where('name', '=', $service_name);
+      }])*/
   }
 }

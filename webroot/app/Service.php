@@ -22,11 +22,7 @@ class Service extends Model
    * Get all user playlists for the service.
    */
   public function playlist() {
-    return $this->hasMany(Playlist::class);
-  }
-
-  public function user() {
-    return $this->belongsTo(User::class);
+    return $this->belongsTo(Playlist::class);
   }
 
   /**

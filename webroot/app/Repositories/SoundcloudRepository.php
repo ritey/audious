@@ -164,14 +164,33 @@ class SoundcloudRepository
    */
   private function syncUpdate($request, $service, $all_music) {
     foreach ($all_music as $playlist_name => $tracks) {
+      // Get playlist.
+      $playlist = Playlist::getPlaylist($playlist_name, ucfirst($service->name));
+
       // If playlist not in DB - add.
-      if (empty(Auth::user()->getPlaylist($playlist_name, ucfirst($service->name)))) {
-        $palylist = Auth::user()->playlists()->create([
+      if (empty($playlist)) {
+        $playlist = Auth::user()->playlists()->create([
           'name' => $playlist_name,
           'service_id' => $service->id
         ]);
       }
+
+      foreach ($tracks as $track) {
+        $playlist->songs()->create([
+          'title' => $track->title,
+          'song_identifier' => $track->id,
+          'image' => $track->artwork_url,
+          'url' => $track->permalink_url,
+          'song_created' => $track->created_at,
+          'service_id' => $service->id
+        ]);
+        // Dont import all songs for now.
+        break;
+      }
     }
+
+    // Delete deleted playlists including songs.
+    Playlist::deletePlaylist(array_keys($all_music), $service->id);
   }
 
 }

@@ -17,16 +17,17 @@ class Song extends Model
     'song_identifier',
     'image',
     'url',
-    'song_created'
+    'song_created',
+    'service_id'
   ];
 
   public function playlist() {
     return $this->belongsTo(Playlist::class);
   }
 
-  public function user() {
+  /*public function user() {
     return $this->belongsTo(User::class);
-  }
+  }*/
 
   /**
    * Returns all songs from a given provider and playlist

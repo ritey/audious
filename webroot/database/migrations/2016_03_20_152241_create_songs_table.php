@@ -22,9 +22,9 @@ class CreateSongsTable extends Migration
             $table->integer('service_id')->index();
             $table->integer('playlist_id')->index();
             $table->string('title');
-            $table->string('song_identifier');
+            $table->string('song_identifier')->index();
             $table->string('url');
-            $table->string('image');
+            $table->string('image')->nullable();
             $table->date('song_created');
         });
     }

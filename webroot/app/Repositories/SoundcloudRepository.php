@@ -175,8 +175,18 @@ class SoundcloudRepository
         ]);
       }
 
+      // Get list of existing songs in db.
+      $song_identifier_in_db = $this->extractPlaylistSongIds($playlist);
+
       foreach ($tracks as $track) {
-        $playlist->songs()->create([
+        // If song already in db, skip and remove from array of existing ids.
+        if (isset($song_identifier_in_db[$track->id])) {
+          unset($song_identifier_in_db[$track->id]);
+          continue;
+        }
+
+        // Create new song.
+        $playlist->songs()->firstOrCreate([
           'title' => $track->title,
           'song_identifier' => $track->id,
           'image' => $track->artwork_url,
@@ -184,13 +194,25 @@ class SoundcloudRepository
           'song_created' => $track->created_at,
           'service_id' => $service->id
         ]);
-        // Dont import all songs for now.
-        break;
+      }
+
+      // Check if any songs left in songs list from db. If so, remove thos songs from db.
+      if (!empty($song_identifier_in_db)) {
+        $song_identifier_in_db = collect($song_identifier_in_db);
+        $ids = $song_identifier_in_db->keyBy('id')->keys();
+        Song::destroy($ids);
       }
     }
 
     // Delete deleted playlists including songs.
     Playlist::deletePlaylist(array_keys($all_music), $service->id);
+  }
+
+  /**
+   * Extract songs identifiers from given playlist.
+   */
+  private function extractPlaylistSongIds($playlist) {
+    return $playlist->songs->keyBy('song_identifier')->toArray();
   }
 
 }

@@ -31,7 +31,9 @@ class Playlist extends Model
       // Get song ids.
       $song_ids = $playlist->songs->pluck('id')->toArray();
 
-      Song::destroy($song_ids);
+      if (!empty($song_ids)) {
+        Song::destroy($song_ids);
+      }
     });
   }
   /**

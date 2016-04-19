@@ -40,4 +40,16 @@ class User extends Authenticatable
       ->join('services', 'services.id', '=', 'playlists.service_id')
       ->where('services.name', '=', $service_name)->get();
   }
+
+  /**
+   * Get user's playlists.
+   * @param  String $service_name Service name i.e. Soundcloud
+   * @return Collection of playlists with songs attached.
+   */
+  public function getPlaylists($service_name) {
+    // Get Service object to parse id later.
+    $service = Service::where('name', $service_name)->first();
+    // Get playlists and songs.
+    return $this->playlists()->with('songs')->where('service_id', $service->id)->get();
+  }
 }

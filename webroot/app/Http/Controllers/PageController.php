@@ -53,18 +53,6 @@ class PageController extends Controller
    * Homepage
    */
   public function index(Request $request) {
-    /*$song = new Song;
-    $service = Service::where('name', 'Soundcloud')->first();
-    $playlist = $service->playlist()->create(['name' => 'test']);
-    $playlist->song()->create([
-
-    ]);*/
-//    $plylist = Playlist::create(['name' => 'test']);
-
-    //$service->playlist()->associate($plylist);
-    //$service->save();
-//$request->session()->forget('services');
-//print_r($request->session()->get('services'));die;
     return view('homepage', [
       'client_id' => env('SOUNDCLOUD_CLIENT_ID'),
       'redirect_uri' => env('SOUNDCLOUD_CALLBACK_URL'),
@@ -72,7 +60,10 @@ class PageController extends Controller
         'soundcloud' => $this->soundcloudRepository->getAuthLinks($request),
         //'google' => $this->googleRepository->getAuthLinks($request),
         //'spotify' => $this->spotifyRepository->getAuthLinks($request)
-      ]
+      ],
+      'playlists' => [
+        'soundcloud' => $request->user()->getPlaylists('Soundcloud')
+      ],
     ]);
   }
 }

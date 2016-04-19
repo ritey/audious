@@ -1,5 +1,6 @@
 //import Marionette from 'backbone.marionette';
-import { SongList } from './collections/SongCollection';
+//import { SongList } from './collections/SongCollection';
+import { PlaylistCollection } from './collections/PlaylistCollection';
 import { SongView } from './views/SongView';
 //import { SyncView } from './views/SyncView';
 import { SyncCollection } from './collections/SyncCollection';
@@ -8,7 +9,8 @@ var { Model, View, Collection, Router } = Backbone;
 var { Application } = Marionette;
 
 // Global Songs collection variable.
-var Songs = new SongList();
+//var Songs = new SongList();
+var Playlists = new PlaylistCollection();
 
 //http://marionettejs.com/docs/v3.0.0-pre.2/marionette.application.html#getting-started
 /*export class App extends Application
@@ -44,12 +46,12 @@ export class AppView extends View
     // Sync music if needed.
     this.syncAllMusic();
 
-    // Event when all songs are added. Runs on startup.
-    this.listenTo(Songs, 'reset', this.addAll);
+    // Event when all playlists are processed.
+    //this.listenTo(Playlists, 'reset', this.addAll);
 
     // Populate Songs collection with static data provided by server in data var.
     //Songs.reset(data, {parse: true});
-    Songs.fetch();
+    //Songs.fetch();
   }
 
   /**
@@ -94,20 +96,20 @@ export class AppView extends View
   /**
    * Display all songs.
    */
-  addAll() {
+  /*addAll() {
     //this.$('#playlist').html('');
     // Iterate through songs and add each to html.
     Songs.each(this.addOne, this);
-  }
+  }*/
 
   /**
    * Display one song.
    */
-  addOne(model) {
+  /*addOne(model) {
     var view = new SongView({ model });
     // Append list with rendered Song partial view.
     $('#playlist').append(view.render().el);
-  }
+  }*/
 
   /**
    * Authorize Soundcloud SDK

@@ -8,7 +8,7 @@ exports.AppView = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _SongCollection = require('./collections/SongCollection');
+var _PlaylistCollection = require('./collections/PlaylistCollection');
 
 var _SongView = require('./views/SongView');
 
@@ -19,6 +19,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } //import Marionette from 'backbone.marionette';
+//import { SongList } from './collections/SongCollection';
 
 //import { SyncView } from './views/SyncView';
 
@@ -32,8 +33,9 @@ var _Marionette = Marionette;
 var Application = _Marionette.Application;
 
 // Global Songs collection variable.
+//var Songs = new SongList();
 
-var Songs = new _SongCollection.SongList();
+var Playlists = new _PlaylistCollection.PlaylistCollection();
 
 //http://marionettejs.com/docs/v3.0.0-pre.2/marionette.application.html#getting-started
 /*export class App extends Application
@@ -72,12 +74,12 @@ var AppView = exports.AppView = function (_View) {
     // Sync music if needed.
     _this.syncAllMusic();
 
-    // Event when all songs are added. Runs on startup.
-    _this.listenTo(Songs, 'reset', _this.addAll);
+    // Event when all playlists are processed.
+    //this.listenTo(Playlists, 'reset', this.addAll);
 
     // Populate Songs collection with static data provided by server in data var.
     //Songs.reset(data, {parse: true});
-    Songs.fetch();
+    //Songs.fetch();
     return _this;
   }
 
@@ -115,7 +117,6 @@ var AppView = exports.AppView = function (_View) {
   }, {
     key: 'syncMusic',
     value: function syncMusic($elem) {
-      console.log($elem);
       var title = $elem.attr('data-service-title');
       Backbone.ajax({
         dataType: "json",
@@ -132,26 +133,20 @@ var AppView = exports.AppView = function (_View) {
     /**
      * Display all songs.
      */
-
-  }, {
-    key: 'addAll',
-    value: function addAll() {
+    /*addAll() {
       //this.$('#playlist').html('');
       // Iterate through songs and add each to html.
       Songs.each(this.addOne, this);
-    }
+    }*/
 
     /**
      * Display one song.
      */
-
-  }, {
-    key: 'addOne',
-    value: function addOne(model) {
-      var view = new _SongView.SongView({ model: model });
+    /*addOne(model) {
+      var view = new SongView({ model });
       // Append list with rendered Song partial view.
       $('#playlist').append(view.render().el);
-    }
+    }*/
 
     /**
      * Authorize Soundcloud SDK
@@ -172,17 +167,17 @@ var AppView = exports.AppView = function (_View) {
   return AppView;
 }(View);
 
-},{"./collections/SongCollection":2,"./collections/SyncCollection":3,"./views/SongView":8}],2:[function(require,module,exports){
+},{"./collections/PlaylistCollection":2,"./collections/SyncCollection":3,"./views/SongView":9}],2:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.SongList = undefined;
+exports.PlaylistCollection = undefined;
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+var _Playlist = require('../models/Playlist');
 
-var _Song = require('../models/Song');
+var _PlaylistView = require('../views/PlaylistView');
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -193,44 +188,43 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var _Backbone = Backbone;
 var Collection = _Backbone.Collection;
 
-/**
- * Song Collection
- */
+var PlaylistCollection = exports.PlaylistCollection = function (_Collection) {
+  _inherits(PlaylistCollection, _Collection);
 
-var SongList = exports.SongList = function (_Collection) {
-  _inherits(SongList, _Collection);
+  function PlaylistCollection() {
+    _classCallCheck(this, PlaylistCollection);
 
-  function SongList(options) {
-    _classCallCheck(this, SongList);
+    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(PlaylistCollection).call(this));
 
-    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(SongList).call(this, options));
+    _this.model = _Playlist.Playlist;
 
-    _this.model = _Song.Song;
+    _.each($('#tracklist ul'), function (service) {
+      var playlist = new _Playlist.Playlist(),
+          songs = [];
 
-    _this.url = '/api/songs';
+      _.each($(service).children('li'), function (song) {
+        songs.push({
+          title: $(song).text()
+        });
+      }, this);
+
+      playlist.set({
+        service: $(service).parents('.tracklist').attr('data-service'),
+        songs: songs
+      });
+
+      var playlistView = new _PlaylistView.PlaylistView({
+        model: playlist,
+        el: 'ul'
+      });
+    }, _this);
     return _this;
   }
 
-  /**
-   * Populate Collection with static data.
-   * At this stage we receive whole data object with all songs.
-   * Lets return Soundcloud favorites list to model level for time being.
-   * In model level it will iterate through individual items.
-   * Figure how to load only needed stuff in the feature.
-   */
-
-
-  _createClass(SongList, [{
-    key: 'parse',
-    value: function parse(response) {
-      return response.music.soundcloud.favorites;
-    }
-  }]);
-
-  return SongList;
+  return PlaylistCollection;
 }(Collection);
 
-},{"../models/Song":5}],3:[function(require,module,exports){
+},{"../models/Playlist":5,"../views/PlaylistView":8}],3:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -298,7 +292,7 @@ var SyncCollection = exports.SyncCollection = function (_Collection) {
   return SyncCollection;
 }(Collection);
 
-},{"../models/Sync":6,"../views/SyncView":9}],4:[function(require,module,exports){
+},{"../models/Sync":6,"../views/SyncView":10}],4:[function(require,module,exports){
 'use strict';
 
 var _app = require('./app');
@@ -351,61 +345,31 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var _Backbone = Backbone;
 var Model = _Backbone.Model;
+
 /**
- * Song model.
+ * Playlist Model.
  */
 
-var Song = exports.Song = function (_Model) {
-  _inherits(Song, _Model);
+var Playlist = exports.Playlist = function (_Model) {
+  _inherits(Playlist, _Model);
 
-  function Song() {
-    _classCallCheck(this, Song);
+  function Playlist() {
+    _classCallCheck(this, Playlist);
 
-    return _possibleConstructorReturn(this, Object.getPrototypeOf(Song).apply(this, arguments));
+    return _possibleConstructorReturn(this, Object.getPrototypeOf(Playlist).apply(this, arguments));
   }
 
-  _createClass(Song, [{
+  _createClass(Playlist, [{
     key: 'defaults',
-
-    /**
-     * Default Song model params.
-     */
     value: function defaults() {
       return {
-        title: '',
-        duration: 0,
-        active: false
+        service: '',
+        songs: []
       };
-    }
-
-    /**
-     * Parse Song details.
-     * At this stage Backbone iterates through individual SongCollection items.
-     */
-
-  }, {
-    key: 'parse',
-    value: function parse(response) {
-      /**
-       * Convenient underscore.js method to extract needed data subset from larger one.
-       */
-      return _.pick(response, 'title', 'duration');
-    }
-
-    /**
-     * Toggle active state.
-     */
-
-  }, {
-    key: 'toggle',
-    value: function toggle() {
-      this.save({
-        active: !this.get('active')
-      });
     }
   }]);
 
-  return Song;
+  return Playlist;
 }(Model);
 
 },{}],6:[function(require,module,exports){
@@ -485,6 +449,51 @@ var SONG_LI_TPL = exports.SONG_LI_TPL = _.template("<span class='title'><%= titl
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var _Backbone = Backbone;
+var View = _Backbone.View;
+//import { SyncCollection } from '../collections/SyncCollection';
+
+var PlaylistView = exports.PlaylistView = function (_View) {
+  _inherits(PlaylistView, _View);
+
+  function PlaylistView(options) {
+    _classCallCheck(this, PlaylistView);
+
+    //options.tagName = 'ul';
+    console.log('playlistView');
+    return _possibleConstructorReturn(this, Object.getPrototypeOf(PlaylistView).call(this, options));
+
+    // fix context issues
+    //_.bindAll(this, 'doSync', 'render');
+    //this.listenTo(Songs, 'reset', this.addAll);
+  }
+
+  _createClass(PlaylistView, [{
+    key: 'render',
+    value: function render() {
+      $(this.el).html('TEST');
+      return this;
+    }
+  }]);
+
+  return PlaylistView;
+}(View);
+
+},{}],9:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 exports.SongView = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -550,7 +559,7 @@ var SongView = exports.SongView = function (_View) {
   return SongView;
 }(View);
 
-},{"../templates/song_li.tpl":7}],9:[function(require,module,exports){
+},{"../templates/song_li.tpl":7}],10:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {

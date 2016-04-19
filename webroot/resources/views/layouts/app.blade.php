@@ -37,8 +37,14 @@
       </header>
       <!-- End of Header -->
 
+      <!-- Left Sidebar -->
+      <aside id="left-sidebar" class="sidebar left">
+        @yield('left-sidebar')
+      </aside>
+        <!-- Endof Left Sidebar -->
+
       <!-- Main Content -->
-      <main class="container">
+      <main class="container" id="tracklist">
         @yield('content')
       </main>
       <!-- Endof Main Content -->

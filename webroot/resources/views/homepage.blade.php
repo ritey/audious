@@ -1,7 +1,11 @@
 
 @extends('layouts.app')
 
+@section('left-sidebar')
+  @include('partials.playlists')
+@endsection
+
 @section('content')
-  <ul id="playlist"></ul>
+  @include('partials.tracks')
 @endsection
 

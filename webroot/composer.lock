@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "40d6ff012ddc50a08fb5e1d98bdbecdd",
-    "content-hash": "9763956bb7085be87e38d5cd531c6cb9",
+    "hash": "60b079b5a23d6814881e128cd93f5bde",
+    "content-hash": "dafdb720dc1d081833b766c9d3865dea",
     "packages": [
         {
             "name": "classpreloader/classpreloader",
@@ -171,7 +171,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/55ab7c5edccd60c4089eb938af158b249f9831a1",
+                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/7011740238e3468486889c194f209bba51118f95",
                 "reference": "55ab7c5edccd60c4089eb938af158b249f9831a1",
                 "shasum": ""
             },
@@ -487,7 +487,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/3f45e9b25bd9c01f6205da3e05ae6eea9b3f4a0e",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/a6ddacb568c1d4fa2d4b6e9f739830692c055973",
                 "reference": "3f45e9b25bd9c01f6205da3e05ae6eea9b3f4a0e",
                 "shasum": ""
             },
@@ -615,7 +615,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/b334d6c5f95364948e06d2f620ab93d084074c6e",
+                "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/94294e4b9feec0b9a126d729812eb411ec7b577d",
                 "reference": "b334d6c5f95364948e06d2f620ab93d084074c6e",
                 "shasum": ""
             },
@@ -698,7 +698,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/5085630fd606c50d9b09efa0f93c0bdd83603d24",
+                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/b23ddb363f28b41d790744197c4cf71e3fdccfe4",
                 "reference": "5085630fd606c50d9b09efa0f93c0bdd83603d24",
                 "shasum": ""
             },
@@ -867,7 +867,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/06d9ba42dedcee9cda97e81aec92cd876a023e8c",
+                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/96cbd48df6d1c6dae38ab2437bee71508947d5c8",
                 "reference": "06d9ba42dedcee9cda97e81aec92cd876a023e8c",
                 "shasum": ""
             },
@@ -907,102 +907,6 @@
                 "php"
             ],
             "time": "2016-03-03 19:52:13"
-        },
-        {
-            "name": "njasm/laravel5-soundcloud",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/njasm/laravel5-soundcloud.git",
-                "reference": "139b457a2905c9fd3b5ce09ef3f8ed0391e4ae76"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/njasm/laravel5-soundcloud/zipball/139b457a2905c9fd3b5ce09ef3f8ed0391e4ae76",
-                "reference": "139b457a2905c9fd3b5ce09ef3f8ed0391e4ae76",
-                "shasum": ""
-            },
-            "require": {
-                "illuminate/support": "5.1.*|5.2.*",
-                "njasm/soundcloud": "~2.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Njasm\\Laravel\\Soundcloud\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Nelson João Morais",
-                    "email": "njmorais@gmail.com",
-                    "role": "Developer"
-                }
-            ],
-            "description": "Soundcloud API Service Provider For Laravel 5",
-            "homepage": "http://github.com/njasm/laravel5-soundcloud",
-            "keywords": [
-                "api",
-                "laravel",
-                "soundcloud",
-                "webservice",
-                "webservices"
-            ],
-            "time": "2016-02-22 23:44:02"
-        },
-        {
-            "name": "njasm/soundcloud",
-            "version": "2.2.5",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/njasm/soundcloud.git",
-                "reference": "5ddaaa492db54a820df31f57cbfb43e50f9650e3"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/njasm/soundcloud/zipball/5ddaaa492db54a820df31f57cbfb43e50f9650e3",
-                "reference": "5ddaaa492db54a820df31f57cbfb43e50f9650e3",
-                "shasum": ""
-            },
-            "require": {
-                "ext-curl": "*",
-                "ext-json": "*",
-                "php": ">=5.3.3"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "4.4.*@dev",
-                "satooshi/php-coveralls": "dev-master"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Njasm\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Nelson João Morais",
-                    "email": "njmorais@gmail.com",
-                    "role": "Developer"
-                }
-            ],
-            "description": "Soundcloud API Wrapper written in PHP with OAuth 2.0 support",
-            "homepage": "http://github.com/njasm/soundcloud",
-            "keywords": [
-                "api",
-                "soundcloud",
-                "webservice",
-                "webservices"
-            ],
-            "time": "2016-01-12 23:50:19"
         },
         {
             "name": "paragonie/random_compat",
@@ -1230,7 +1134,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/swiftmailer/swiftmailer/zipball/fffbc0e2a7e376dbb0a4b5f2ff6847330f20ccf9",
+                "url": "https://api.github.com/repos/swiftmailer/swiftmailer/zipball/68f50da0fdd6cb0146d17d6bde20b76e0e57e7fb",
                 "reference": "fffbc0e2a7e376dbb0a4b5f2ff6847330f20ccf9",
                 "shasum": ""
             },
@@ -1283,7 +1187,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/console/zipball/8412f1e1650c27758908c584f63f05bfba3f0314",
+                "url": "https://api.github.com/repos/symfony/console/zipball/34a214710e0714b6efcf40ba3cd1e31373a97820",
                 "reference": "8412f1e1650c27758908c584f63f05bfba3f0314",
                 "shasum": ""
             },
@@ -1343,7 +1247,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/debug/zipball/b7a2a52278d62b0c5abfdd2e4bb3b55f2109c77f",
+                "url": "https://api.github.com/repos/symfony/debug/zipball/a06d10888a45afd97534506afb058ec38d9ba35b",
                 "reference": "b7a2a52278d62b0c5abfdd2e4bb3b55f2109c77f",
                 "shasum": ""
             },
@@ -1400,7 +1304,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/event-dispatcher/zipball/1df0dbedb6d9407e5305afe7ca34bee0f2878407",
+                "url": "https://api.github.com/repos/symfony/event-dispatcher/zipball/0343b2cedd0edb26cdc791212a8eb645c406018b",
                 "reference": "1df0dbedb6d9407e5305afe7ca34bee0f2878407",
                 "shasum": ""
             },
@@ -1460,7 +1364,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/finder/zipball/623bda0abd9aa29e529c8e9c08b3b84171914723",
+                "url": "https://api.github.com/repos/symfony/finder/zipball/c54e407b35bc098916704e9fd090da21da4c4f52",
                 "reference": "623bda0abd9aa29e529c8e9c08b3b84171914723",
                 "shasum": ""
             },
@@ -1509,7 +1413,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/http-foundation/zipball/8a7648cb85f12e707bab6b6f755ff5d108236023",
+                "url": "https://api.github.com/repos/symfony/http-foundation/zipball/18b24bc32d2495ae79d76e777368786a6536fe31",
                 "reference": "8a7648cb85f12e707bab6b6f755ff5d108236023",
                 "shasum": ""
             },
@@ -1561,7 +1465,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/http-kernel/zipball/c554014544e924e88b6d409e4b0d3b0f19f14d45",
+                "url": "https://api.github.com/repos/symfony/http-kernel/zipball/1eb9646fe5fbe2d81e0de21bc4e5951c2077bd92",
                 "reference": "c554014544e924e88b6d409e4b0d3b0f19f14d45",
                 "shasum": ""
             },
@@ -1643,7 +1547,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/1289d16209491b584839022f29257ad859b8532d",
+                "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/6bab34bbffa5f5ac079fdc4a68e143f158e87b7d",
                 "reference": "1289d16209491b584839022f29257ad859b8532d",
                 "shasum": ""
             },
@@ -1810,7 +1714,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/process/zipball/36c9f90f2e9f97ce8a0bdfbe2c230934d64087a1",
+                "url": "https://api.github.com/repos/symfony/process/zipball/53f9407c0bb1c5a79127db8f7bfe12f0f6f3dcdb",
                 "reference": "36c9f90f2e9f97ce8a0bdfbe2c230934d64087a1",
                 "shasum": ""
             },
@@ -1859,7 +1763,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/routing/zipball/fa1e9a8173cf0077dd995205da453eacd758fdf6",
+                "url": "https://api.github.com/repos/symfony/routing/zipball/6ab6fd5ee754fb53a303a5621ae35f3afd5970ac",
                 "reference": "fa1e9a8173cf0077dd995205da453eacd758fdf6",
                 "shasum": ""
             },
@@ -1934,7 +1838,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/translation/zipball/2de0b6f7ebe43cffd8a06996ebec6aab79ea9e91",
+                "url": "https://api.github.com/repos/symfony/translation/zipball/f7a07af51ea067745a521dab1e3152044a2fb1f2",
                 "reference": "2de0b6f7ebe43cffd8a06996ebec6aab79ea9e91",
                 "shasum": ""
             },
@@ -1998,7 +1902,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/var-dumper/zipball/9a6a883c48acb215d4825ce9de61dccf93d62074",
+                "url": "https://api.github.com/repos/symfony/var-dumper/zipball/0e918c269093ba4c77fca14e9424fa74ed16f1a6",
                 "reference": "9a6a883c48acb215d4825ce9de61dccf93d62074",
                 "shasum": ""
             },
@@ -2057,19 +1961,19 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/vlucas/phpdotenv.git",
-                "reference": "11a353b704488944a7477b229d119fe1cfa56f68"
+                "reference": "40c41acb79ed6fd6ddd8d5790c6ec8c777ce039f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/vlucas/phpdotenv/zipball/11a353b704488944a7477b229d119fe1cfa56f68",
-                "reference": "11a353b704488944a7477b229d119fe1cfa56f68",
+                "url": "https://api.github.com/repos/vlucas/phpdotenv/zipball/40c41acb79ed6fd6ddd8d5790c6ec8c777ce039f",
+                "reference": "40c41acb79ed6fd6ddd8d5790c6ec8c777ce039f",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.9"
             },
             "require-dev": {
-                "phpunit/phpunit": "^4.8|^5.0"
+                "phpunit/phpunit": "^4.8 || ^5.0"
             },
             "type": "library",
             "extra": {
@@ -2094,13 +1998,12 @@
                 }
             ],
             "description": "Loads environment variables from `.env` to `getenv()`, `$_ENV` and `$_SERVER` automagically.",
-            "homepage": "http://github.com/vlucas/phpdotenv",
             "keywords": [
                 "dotenv",
                 "env",
                 "environment"
             ],
-            "time": "2016-02-11 08:44:10"
+            "time": "2016-04-28 17:30:05"
         }
     ],
     "packages-dev": [
@@ -2114,7 +2017,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/instantiator/zipball/8e884e78f9f0eb1329e445619e04456e64d8051d",
+                "url": "https://api.github.com/repos/doctrine/instantiator/zipball/416fb8ad1d095a87f1d21bc40711843cd122fd4a",
                 "reference": "8e884e78f9f0eb1329e445619e04456e64d8051d",
                 "shasum": ""
             },
@@ -2168,7 +2071,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fzaninotto/Faker/zipball/86ec14457afce95c9ad57ee8394c57f57a1aaf43",
+                "url": "https://api.github.com/repos/fzaninotto/Faker/zipball/120198f907231348a29cbcb362ec4d41ea22c1dc",
                 "reference": "86ec14457afce95c9ad57ee8394c57f57a1aaf43",
                 "shasum": ""
             },
@@ -2325,6 +2228,102 @@
             "time": "2015-04-02 19:54:00"
         },
         {
+            "name": "njasm/laravel5-soundcloud",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/njasm/laravel5-soundcloud.git",
+                "reference": "139b457a2905c9fd3b5ce09ef3f8ed0391e4ae76"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/njasm/laravel5-soundcloud/zipball/181ed049e7f1689da1df6265aa61984726946209",
+                "reference": "139b457a2905c9fd3b5ce09ef3f8ed0391e4ae76",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/support": "5.1.*|5.2.*",
+                "njasm/soundcloud": "~2.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Njasm\\Laravel\\Soundcloud\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Nelson João Morais",
+                    "email": "njmorais@gmail.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Soundcloud API Service Provider For Laravel 5",
+            "homepage": "http://github.com/njasm/laravel5-soundcloud",
+            "keywords": [
+                "api",
+                "laravel",
+                "soundcloud",
+                "webservice",
+                "webservices"
+            ],
+            "time": "2016-02-22 23:44:02"
+        },
+        {
+            "name": "njasm/soundcloud",
+            "version": "2.2.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/njasm/soundcloud.git",
+                "reference": "5ddaaa492db54a820df31f57cbfb43e50f9650e3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/njasm/soundcloud/zipball/5ddaaa492db54a820df31f57cbfb43e50f9650e3",
+                "reference": "5ddaaa492db54a820df31f57cbfb43e50f9650e3",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "ext-json": "*",
+                "php": ">=5.3.3"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "4.4.*@dev",
+                "satooshi/php-coveralls": "dev-master"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Njasm\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Nelson João Morais",
+                    "email": "njmorais@gmail.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Soundcloud API Wrapper written in PHP with OAuth 2.0 support",
+            "homepage": "http://github.com/njasm/soundcloud",
+            "keywords": [
+                "api",
+                "soundcloud",
+                "webservice",
+                "webservices"
+            ],
+            "time": "2016-01-12 23:50:19"
+        },
+        {
             "name": "phpdocumentor/reflection-docblock",
             "version": "2.0.4",
             "source": {
@@ -2383,7 +2382,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpspec/prophecy/zipball/b02221e42163be673f9b44a0bc92a8b4907a7c6d",
+                "url": "https://api.github.com/repos/phpspec/prophecy/zipball/80138299aadb590ce3fd0b75d30343fff9f8d0a8",
                 "reference": "b02221e42163be673f9b44a0bc92a8b4907a7c6d",
                 "shasum": ""
             },
@@ -2685,7 +2684,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/264188ddf4d3586c80ea615f8ec8eaea34e652a1",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/ac4dfb003d2d89e8f474fa15b0f9714ac1b45899",
                 "reference": "264188ddf4d3586c80ea615f8ec8eaea34e652a1",
                 "shasum": ""
             },
@@ -2929,7 +2928,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/environment/zipball/dc7a29032cf72b54f36dac15a1ca5b3a1b6029bf",
+                "url": "https://api.github.com/repos/sebastianbergmann/environment/zipball/2292b116f43c272ff4328083096114f84ea46a56",
                 "reference": "dc7a29032cf72b54f36dac15a1ca5b3a1b6029bf",
                 "shasum": ""
             },
@@ -3238,7 +3237,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/dom-crawler/zipball/a5a2d27385655d34fd08557f8a315b6f27cbc5cf",
+                "url": "https://api.github.com/repos/symfony/dom-crawler/zipball/49b588841225b205700e5122fa01911cabada857",
                 "reference": "a5a2d27385655d34fd08557f8a315b6f27cbc5cf",
                 "shasum": ""
             },
@@ -3294,7 +3293,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/yaml/zipball/801d412451594f7c9e7950a016a377798cf9dfa0",
+                "url": "https://api.github.com/repos/symfony/yaml/zipball/407e31ad9742ace5c3d01642f02a3b2e6062bae5",
                 "reference": "801d412451594f7c9e7950a016a377798cf9dfa0",
                 "shasum": ""
             },
@@ -3336,9 +3335,7 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": {
-        "njasm/laravel5-soundcloud": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {

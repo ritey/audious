@@ -1,16 +1,14 @@
 //import Marionette from 'backbone.marionette';
-//import { SongList } from './collections/SongCollection';
-import { PlaylistCollection } from './collections/PlaylistCollection';
-import { SongView } from './views/SongView';
+import { SongCollection } from './collections/SongCollection';
+//import { PlaylistCollection } from './collections/PlaylistCollection';
+//import { SongView } from './views/SongView';
 //import { SyncView } from './views/SyncView';
-import { SyncCollection } from './collections/SyncCollection';
+//import { SyncCollection } from './collections/SyncCollection';
 
 var { Model, View, Collection, Router } = Backbone;
-var { Application } = Marionette;
+//var { Application } = Marionette;
 
-// Global Songs collection variable.
-//var Songs = new SongList();
-var Playlists = new PlaylistCollection();
+//var Playlists = new PlaylistCollection();
 
 //http://marionettejs.com/docs/v3.0.0-pre.2/marionette.application.html#getting-started
 /*export class App extends Application
@@ -27,6 +25,7 @@ var Playlists = new PlaylistCollection();
     console.log('hello, Marionette');
   }
 }*/
+var Songs = new SongCollection();
 
 export class AppView extends View
 {
@@ -34,7 +33,7 @@ export class AppView extends View
     super();
 
     this.$el = $('#app');
-    this.$sync = $('#sync');
+    //this.$sync = $('#sync');
 
     this.soundcloudReady = false;
 
@@ -43,22 +42,35 @@ export class AppView extends View
       this.authorise();
     }
 
+    // Add CSRF token for ajax requests.
+    this.addCSRFToken();
+
     // Sync music if needed.
     this.syncAllMusic();
 
     // Event when all playlists are processed.
     //this.listenTo(Playlists, 'reset', this.addAll);
-
-    // Populate Songs collection with static data provided by server in data var.
-    //Songs.reset(data, {parse: true});
-    //Songs.fetch();
   }
 
   /**
    * Render App.
    */
   render() {
+    var active = Songs.active();
+  }
 
+  /**
+   * Add CSRF token for ajax requests.
+   */
+  addCSRFToken() {
+    if ($("meta[name='_token'").length) {
+      $.ajaxSetup({
+        headers: {
+          "accept": "application/json",
+          "X-CSRF-TOKEN": $("meta[name='_token'").attr('content')
+        }
+      });
+    }
   }
 
   /**
@@ -116,8 +128,8 @@ export class AppView extends View
    */
   authorise() {
     SC.initialize({
-      client_id: $("meta[name='soundcloud_client_id']").getAttribute('content'),
-      redirect_uri: $("meta[name='soundcloud_redirect_uri']").getAttribute('content')
+      client_id: $("meta[name='soundcloud_client_id']").attr('content'),
+      redirect_uri: $("meta[name='soundcloud_redirect_uri']").attr('content')
     });
 
     this.soundcloudReady = true;

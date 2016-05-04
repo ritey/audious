@@ -1,28 +1,48 @@
 import { Song } from '../models/Song';
+import { SongView } from '../views/SongView';
 
 var { Collection } = Backbone;
 
 /**
  * Song Collection
  */
-export class SongList extends Collection
+export class SongCollection extends Collection
 {
-  constructor(options) {
-    super(options);
+  constructor() {
+    super();
 
+    // Attach model.
     this.model = Song;
 
-    this.url = '/api/songs';
+    // backend API url
+    this.url = '/api/song';
+
+    // Parse songs from DOM.
+    _.each($('#tracklist ul li.song'), function(elem) {
+      var song = new Song({
+        id: $(elem).attr('data-id'),
+        identifier: $(elem).attr('data-identifier'),
+        title: $(elem).text(),
+        service: $(elem).parents('.playlists').attr('data-service'),
+        playlist: $(elem).parents('.playlist').attr('data-playlist'),
+        active: $(elem).hasClass('active')
+      });
+
+      // If ever need to attach a view to it.
+      var songView = new SongView({
+        model: song,
+        el: elem,
+        tagName: 'li'
+      });
+
+      this.add(song);
+    }, this);
   }
 
   /**
-   * Populate Collection with static data.
-   * At this stage we receive whole data object with all songs.
-   * Lets return Soundcloud favorites list to model level for time being.
-   * In model level it will iterate through individual items.
-   * Figure how to load only needed stuff in the feature.
+   * Get active song.
    */
-  parse(response) {
-    return response.music.soundcloud.favorites;
+  active() {
+    return this.filter(song => song.get('active'));
   }
 }

@@ -1,10 +1,13 @@
 <!-- Music Player Structure -->
-<section class="player">
+<section id="player">
   <div class="controls">
-    <button class="play">Play</button>
-    <button class="stop">Stop</button>
-    <button class="previous">Previous</button>
-    <button class="next">Next</button>
+    <button class="play"><i class="fa fa-play" aria-hidden="true"></i></button>
+    <button class="stop"><i class="fa fa-stop" aria-hidden="true"></i></button>
+    <button class="previous"><i class="fa fa-backward" aria-hidden="true"></i></button>
+    <button class="next"><i class="fa fa-forward" aria-hidden="true"></i></button>
   </div>
+  <!-- Song details in music player -->
+  <div class="song-details"></div>
+  <!-- Endof Song details in music player -->
 </section>
 <!-- Endof Music Player Structure -->

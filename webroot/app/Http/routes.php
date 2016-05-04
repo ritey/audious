@@ -34,5 +34,7 @@ Route::group(['middleware' => ['web']], function () {
     Route::get('songs', 'ApiController@index');
     // Sync music.
     Route::get('sync/{service}', 'ApiController@sync');
+    // Update song object.
+    Route::put('song/{song}', 'ApiController@update');
   });
 });

@@ -3,12 +3,13 @@
 @if (count($playlists) > 0)
   @foreach ($playlists as $service => $service_playlists)
 
-    <div class="{{$service}} tracklist" data-service="{{$service}}">
+    <div class="{{$service}} playlists" data-service="{{$service}}">
       @foreach ($service_playlists as $playlist)
-        <ul class="{{ $playlist->name }}">
+        <ul class="playlist" data-playlist="{{ $playlist->name }}">
           @foreach ($playlist->songs as $song)
-            <li class="">{{$song->title}}</li>
+            <li class="song<?php $song->active ? print ' active' : '' ?>" data-identifier="{{ $song->song_identifier }}" data-id="{{ $song->id }}">{{$song->title}}</li>
           @endforeach
+          <li class="playlist-footer">{{ $playlist->name }}</li>
         </ul>
       @endforeach
     </div>

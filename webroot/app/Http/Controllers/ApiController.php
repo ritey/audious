@@ -28,4 +28,12 @@ class ApiController extends Controller
     $new_tracks = $service_obj->sync($request, $service);
     return response()->json($new_tracks);
   }
+
+  /**
+   * Update Song attributes. ATM it is just setting whether song is active.
+   */
+  public function update(Request $request, Song $song) {
+    $song->active = $request->active;
+    $song->save();
+  }
 }

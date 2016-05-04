@@ -3,18 +3,25 @@ var { View } = Backbone;
 
 export class PlaylistView extends View
 {
-  constructor(options) {
-    //options.tagName = 'ul';
-console.log('playlistView');
+  /*constructor(options) {
     super(options);
+  }*/
 
-    // fix context issues
-    //_.bindAll(this, 'doSync', 'render');
-    //this.listenTo(Songs, 'reset', this.addAll);
+  // Define events we gonna listen on.
+  /*get events() {
+    console.log('Initializing playlist events');
+    return {
+      'click li.song': 'play'
+    };
+  }
+
+  play() {
+    console.log('playing');
+    console.log(this);
   }
 
   render() {
-    $(this.el).html('TEST');
-    return this;
-  }
+    //$(this.el).html('TEST');
+    //return this;
+  }*/
 }

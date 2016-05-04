@@ -2,6 +2,6 @@
  * Songs list item template.
  */
 export var SONG_LI_TPL = _.template(
-  "<span class='title'><%= title %></span>" +
-  "<button class='play'>Play</button>"
+  "<button class='play'>Play</button>" +
+  "<span class='title'><%= title %></span>"
 );

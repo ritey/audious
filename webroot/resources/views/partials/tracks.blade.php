@@ -7,7 +7,7 @@
       @foreach ($service_playlists as $playlist)
         <ul class="playlist" data-playlist="{{ $playlist->name }}">
           @foreach ($playlist->songs as $song)
-            <li class="song<?php $song->active ? print ' active' : '' ?>" data-identifier="{{ $song->song_identifier }}" data-id="{{ $song->id }}">{{$song->title}}</li>
+            <li class="song" data-identifier="{{ $song->song_identifier }}" data-id="{{ $song->id }}">{{$song->title}}</li>
           @endforeach
           <li class="playlist-footer">{{ $playlist->name }}</li>
         </ul>

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use GuzzleHttp\Client;
 use App\Playlist;
 use App\Service;
+use App\Song;
 use DB;
 use Auth;
 

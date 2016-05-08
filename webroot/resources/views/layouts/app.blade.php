@@ -5,8 +5,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="_token" content="{{ csrf_token() }}">
-    <meta name="soundcloud_client_id" content="{{ $client_id }} ">
-    <meta name="soundcloud_redirect_uri" content="{{ $redirect_uri }} ">
+    <meta name="soundcloud_client_id" content="{{ isset($client_id) ? $client_id : '' }} ">
+    <meta name="soundcloud_redirect_uri" content="{{ isset($redirect_uri) ? $redirect_uri : '' }} ">
     <title>Audious</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="{{ elixir('css/app.css') }}">

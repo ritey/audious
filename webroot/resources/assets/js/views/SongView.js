@@ -1,4 +1,5 @@
-import { SONG_LI_TPL } from '../templates/song_li.tpl';
+import { SONG_INACTIVE_LI_TPL } from '../templates/song_inactive_li.tpl';
+import { SONG_ACTIVE_LI_TPL } from '../templates/song_active_li.tpl';
 import { SONG_DETAILS_PLAYER } from '../templates/song_details_player.tpl';
 
 var { View } = Backbone;
@@ -8,15 +9,18 @@ export class SongView extends View
   // Define events we gonna listen on.
   get events() {
     return {
-      "click button.play": "play"
+      "click button.playlist.play": "play",
+      "click button.playlist.pause": "pause"
     };
   }
 
   constructor(options) {
     super(options);
     // Cache templates:
-    // Song item tpl.
-    this.template = SONG_LI_TPL;
+    // Song inactive item tpl.
+    this.song_inactive_li_template = SONG_INACTIVE_LI_TPL;
+    // Song active item tpl.
+    this.song_active_li_template = SONG_ACTIVE_LI_TPL;
     // Player song details tpl.
     this.song_details_template = SONG_DETAILS_PLAYER;
     // Listen for model changes.
@@ -28,14 +32,20 @@ export class SongView extends View
 
   render() {
     var is_active = this.model.get('active');
-    // Pass model data to template and then append to DOM.
-    this.$el.html(this.template(this.model.toJSON()));
-    // Add active class to active song DOM elem.
-    this.$el.toggleClass('active', is_active);
-    // Change Music player details.
+
     if (is_active) {
+      // Pass model data to template and then append to DOM.
+      this.$el.html(this.song_active_li_template(this.model.toJSON()));
+      // Change Music player details.
       this.updateMusicPlayer(this.model);
     }
+    else {
+      // Pass model data to template and then append to DOM.
+      this.$el.html(this.song_inactive_li_template(this.model.toJSON()));
+    }
+
+    // Add active class to active song DOM elem.
+    this.$el.toggleClass('active', is_active);
 
     return this;
   }
@@ -49,8 +59,21 @@ export class SongView extends View
     // Activate new song.
     this.model.toggle();
 
-    // Play song. Call dynamically service named function and pass active song model.
-    this[this.model.get('service') + '_play'](this.model);
+    this.model.trigger('play', this.model);
+
+    this.render();
+  }
+
+  /**
+   * Pause button event callback.
+   */
+  pause() {
+    // Deactivate current active song.
+    this.deactivate();
+
+    this.model.trigger('pause', this.model);
+
+    this.render();
   }
 
   /**
@@ -70,17 +93,6 @@ export class SongView extends View
    * Update Music Player details
    */
   updateMusicPlayer(song) {
-    $('#player .song-details').html(this.song_details_template(song.toJSON()));
-  }
-
-  /**
-   * Play
-   * @param  {[type]} $song [description]
-   * @return {[type]}       [description]
-   */
-  soundcloud_play($song) {
-    SC.stream('/tracks/' + $song.get('identifier')).then(function(player){
-      player.play();
-    });
+    $('#player').html(this.song_details_template(song.toJSON()));
   }
 }

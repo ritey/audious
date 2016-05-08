@@ -1,5 +1,5 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-'use strict';
+"use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -8,7 +8,7 @@ exports.AppView = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _SongCollection = require('./collections/SongCollection');
+var _SongCollection = require("./collections/SongCollection");
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -52,6 +52,18 @@ var Songs = new _SongCollection.SongCollection();
 var AppView = exports.AppView = function (_View) {
   _inherits(AppView, _View);
 
+  _createClass(AppView, [{
+    key: "events",
+
+    // Define events we gonna listen on.
+    get: function get() {
+      return {
+        "click button.player.play": "player_play",
+        "click button.player.pause": "player_pause"
+      };
+    }
+  }]);
+
   function AppView() {
     _classCallCheck(this, AppView);
 
@@ -60,21 +72,28 @@ var AppView = exports.AppView = function (_View) {
     _this.$el = $('#app');
     //this.$sync = $('#sync');
 
-    _this.soundcloudReady = false;
+    //this.soundcloudReady = false;
 
     // Authorise Soundcloud SDK.
-    if ($("meta[name='soundcloud_client_id']").length) {
-      _this.authorise();
-    }
+    /*if ($("meta[name='soundcloud_client_id']").length) {
+      this.authorise();
+    }*/
+
+    // Init player.
+    _this.player = new Audio();
+    // Variable for playing song. holds even when paused.
+    _this.current_song = null;
+    // Soundcloud cliend_id;
+    _this.soundcloud_client_id = $("meta[name='soundcloud_client_id']").attr('content');
+    // Listen for events.
+    _this.listenTo(Songs, 'play', _this.play);
+    _this.listenTo(Songs, 'pause', _this.pause);
 
     // Add CSRF token for ajax requests.
     _this.addCSRFToken();
 
     // Sync music if needed.
     _this.syncAllMusic();
-
-    // Event when all playlists are processed.
-    //this.listenTo(Playlists, 'reset', this.addAll);
     return _this;
   }
 
@@ -84,7 +103,7 @@ var AppView = exports.AppView = function (_View) {
 
 
   _createClass(AppView, [{
-    key: 'render',
+    key: "render",
     value: function render() {
       var active = Songs.active();
     }
@@ -94,7 +113,7 @@ var AppView = exports.AppView = function (_View) {
      */
 
   }, {
-    key: 'addCSRFToken',
+    key: "addCSRFToken",
     value: function addCSRFToken() {
       if ($("meta[name='_token'").length) {
         $.ajaxSetup({
@@ -111,7 +130,7 @@ var AppView = exports.AppView = function (_View) {
      */
 
   }, {
-    key: 'syncAllMusic',
+    key: "syncAllMusic",
     value: function syncAllMusic() {
       var context = this;
       // Check if there is any refresh icons.
@@ -129,7 +148,7 @@ var AppView = exports.AppView = function (_View) {
      */
 
   }, {
-    key: 'syncMusic',
+    key: "syncMusic",
     value: function syncMusic($elem) {
       var title = $elem.attr('data-service-title');
       Backbone.ajax({
@@ -142,6 +161,76 @@ var AppView = exports.AppView = function (_View) {
           console.log(val);
         }
       });
+    }
+  }, {
+    key: "play",
+    value: function play(song) {
+      /*
+      // Play song. Call dynamically service named function and pass active song model.
+      //this[this.model.get('service') + '_stop'](this.model);
+       // Play song. Call dynamically service named function and pass active song model.
+      //this[this.model.get('service') + '_play'](this.model);
+      */
+      if (this.current_song != song) {
+        this[song.get('service') + '_load'](song);
+      } else {
+        this[song.get('service') + '_play'](song);
+      }
+    }
+  }, {
+    key: "player_pause",
+    value: function player_pause() {
+      console.log('player pause');
+    }
+  }, {
+    key: "pause",
+    value: function pause(song) {
+      console.log('lets pause');
+      this[song.get('service') + '_pause'](song);
+    }
+
+    /**
+     * Play
+     */
+
+  }, {
+    key: "soundcloud_load",
+    value: function soundcloud_load(song) {
+      this.player.pause();
+      this.player.src = 'https://api.soundcloud.com/tracks/' + song.get('identifier') + '/stream?consumer_key=' + this.soundcloud_client_id;
+      this.player.load();
+      this.player.play();
+
+      this.current_song = song;
+    }
+
+    /**
+     * Play song.
+     */
+
+  }, {
+    key: "soundcloud_play",
+    value: function soundcloud_play(song) {
+      this.player.play();
+    }
+    /**
+     * Stop song.
+     */
+
+  }, {
+    key: "soundcloud_stop",
+    value: function soundcloud_stop(song) {
+      this.soundcloud_pause();
+    }
+
+    /**
+     * Pause song.
+     */
+
+  }, {
+    key: "soundcloud_pause",
+    value: function soundcloud_pause(song) {
+      this.player.pause();
     }
 
     /**
@@ -165,17 +254,14 @@ var AppView = exports.AppView = function (_View) {
     /**
      * Authorize Soundcloud SDK
      */
-
-  }, {
-    key: 'authorise',
-    value: function authorise() {
+    /*authorise() {
       SC.initialize({
         client_id: $("meta[name='soundcloud_client_id']").attr('content'),
         redirect_uri: $("meta[name='soundcloud_redirect_uri']").attr('content')
       });
+       this.soundcloudReady = true;
+    }*/
 
-      this.soundcloudReady = true;
-    }
   }]);
 
   return AppView;
@@ -263,7 +349,7 @@ var SongCollection = exports.SongCollection = function (_Collection) {
   return SongCollection;
 }(Collection);
 
-},{"../models/Song":4,"../views/SongView":7}],3:[function(require,module,exports){
+},{"../models/Song":4,"../views/SongView":8}],3:[function(require,module,exports){
 'use strict';
 
 var _app = require('./app');
@@ -381,9 +467,9 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 /**
- * Song details in music player at the bottom of the screen.
+ * Songs list item template.
  */
-var SONG_DETAILS_PLAYER = exports.SONG_DETAILS_PLAYER = _.template("<span class='title'><%= title %></span>");
+var SONG_ACTIVE_LI_TPL = exports.SONG_ACTIVE_LI_TPL = _.template("<button class='pause playlist'><i class='fa fa-pause' aria-hidden='true'></i></button>" + "<span class='title'><%= title %></span>");
 
 },{}],6:[function(require,module,exports){
 "use strict";
@@ -392,11 +478,22 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 /**
- * Songs list item template.
+ * Song details in music player at the bottom of the screen.
  */
-var SONG_LI_TPL = exports.SONG_LI_TPL = _.template("<button class='play'>Play</button>" + "<span class='title'><%= title %></span>");
+var SONG_DETAILS_PLAYER = exports.SONG_DETAILS_PLAYER = _.template("<div class='controls'>" + "<button class='pause player'><i class='fa fa-pause' aria-hidden='true'></i></button>" + "<button class='stop player'><i class='fa fa-stop' aria-hidden='true'></i></button>" + "<button class='previous player'><i class='fa fa-backward' aria-hidden='true'></i></button>" + "<button class='next player'><i class='fa fa-forward' aria-hidden='true'></i></button>" + "</div>" + "<div class='song-details'>" + "<span class='title'><%= title %></span>" + "</div>");
 
 },{}],7:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+/**
+ * Songs list item template.
+ */
+var SONG_INACTIVE_LI_TPL = exports.SONG_INACTIVE_LI_TPL = _.template("<button class='play playlist'><i class='fa fa-play' aria-hidden='true'></i></button>" + "<span class='title'><%= title %></span>");
+
+},{}],8:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -406,7 +503,9 @@ exports.SongView = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _song_li = require('../templates/song_li.tpl');
+var _song_inactive_li = require('../templates/song_inactive_li.tpl');
+
+var _song_active_li = require('../templates/song_active_li.tpl');
 
 var _song_details_player = require('../templates/song_details_player.tpl');
 
@@ -428,7 +527,8 @@ var SongView = exports.SongView = function (_View) {
     // Define events we gonna listen on.
     get: function get() {
       return {
-        "click button.play": "play"
+        "click button.playlist.play": "play",
+        "click button.playlist.pause": "pause"
       };
     }
   }]);
@@ -437,11 +537,13 @@ var SongView = exports.SongView = function (_View) {
     _classCallCheck(this, SongView);
 
     // Cache templates:
-    // Song item tpl.
+    // Song inactive item tpl.
 
     var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(SongView).call(this, options));
 
-    _this.template = _song_li.SONG_LI_TPL;
+    _this.song_inactive_li_template = _song_inactive_li.SONG_INACTIVE_LI_TPL;
+    // Song active item tpl.
+    _this.song_active_li_template = _song_active_li.SONG_ACTIVE_LI_TPL;
     // Player song details tpl.
     _this.song_details_template = _song_details_player.SONG_DETAILS_PLAYER;
     // Listen for model changes.
@@ -456,14 +558,19 @@ var SongView = exports.SongView = function (_View) {
     key: 'render',
     value: function render() {
       var is_active = this.model.get('active');
-      // Pass model data to template and then append to DOM.
-      this.$el.html(this.template(this.model.toJSON()));
+
+      if (is_active) {
+        // Pass model data to template and then append to DOM.
+        this.$el.html(this.song_active_li_template(this.model.toJSON()));
+        // Change Music player details.
+        this.updateMusicPlayer(this.model);
+      } else {
+        // Pass model data to template and then append to DOM.
+        this.$el.html(this.song_inactive_li_template(this.model.toJSON()));
+      }
+
       // Add active class to active song DOM elem.
       this.$el.toggleClass('active', is_active);
-      // Change Music player details.
-      if (is_active) {
-        this.updateMusicPlayer(this.model);
-      }
 
       return this;
     }
@@ -480,8 +587,24 @@ var SongView = exports.SongView = function (_View) {
       // Activate new song.
       this.model.toggle();
 
-      // Play song. Call dynamically service named function and pass active song model.
-      this[this.model.get('service') + '_play'](this.model);
+      this.model.trigger('play', this.model);
+
+      this.render();
+    }
+
+    /**
+     * Pause button event callback.
+     */
+
+  }, {
+    key: 'pause',
+    value: function pause() {
+      // Deactivate current active song.
+      this.deactivate();
+
+      this.model.trigger('pause', this.model);
+
+      this.render();
     }
 
     /**
@@ -507,27 +630,13 @@ var SongView = exports.SongView = function (_View) {
   }, {
     key: 'updateMusicPlayer',
     value: function updateMusicPlayer(song) {
-      $('#player .song-details').html(this.song_details_template(song.toJSON()));
-    }
-
-    /**
-     * Play
-     * @param  {[type]} $song [description]
-     * @return {[type]}       [description]
-     */
-
-  }, {
-    key: 'soundcloud_play',
-    value: function soundcloud_play($song) {
-      SC.stream('/tracks/' + $song.get('identifier')).then(function (player) {
-        player.play();
-      });
+      $('#player').html(this.song_details_template(song.toJSON()));
     }
   }]);
 
   return SongView;
 }(View);
 
-},{"../templates/song_details_player.tpl":5,"../templates/song_li.tpl":6}]},{},[3]);
+},{"../templates/song_active_li.tpl":5,"../templates/song_details_player.tpl":6,"../templates/song_inactive_li.tpl":7}]},{},[3]);
 
 //# sourceMappingURL=main.js.map

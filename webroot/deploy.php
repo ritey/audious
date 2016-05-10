@@ -43,9 +43,9 @@ set('shared_dirs', [
     'webroot/storage/logs',
 ]);
 // Laravel 5 shared file
-set('shared_files', ['webroot/.env']);
+set('shared_files', ['.env']);
 // Laravel writable dirs
-set('writable_dirs', ['webroot/storage', 'webroot/vendor']);
+set('writable_dirs', ['storage', 'vendor']);
 
 // Override original composer task.
 /**
@@ -81,6 +81,14 @@ task('optimise', function() {
   run('php artisan route:cache');
 });
 
+/**
+ * Migrate database.
+ */
+task('database:migrate', function() {
+  cd('{{deploy_path}}/release/webroot');
+  run("php artisan migrate");
+});
+
 // Deployment script.
 task('deploy', [
   'deploy:prepare',
@@ -88,6 +96,7 @@ task('deploy', [
   'deploy:update_code',
   'deploy:vendors',
   'deploy:shared',
+  'database:migrate',
   'change_permissions',
   'optimise',
   'deploy:symlink',

@@ -85,8 +85,8 @@ task('optimise', function() {
  * Migrate database.
  */
 task('database:migrate', function() {
-  cd('{{deploy_path}}/current/webroot');
-  run("php artisan migrate");
+  cd('{{deploy_path}}/release/webroot');
+  run("php artisan migrate --force");
 });
 
 // Deployment script.
@@ -97,8 +97,8 @@ task('deploy', [
   'deploy:vendors',
   'deploy:shared',
   'change_permissions',
+  'database:migrate',
   'optimise',
   'deploy:symlink',
-  'database:migrate',
   'cleanup',
 ])->desc('Deploy your project');

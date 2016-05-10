@@ -21,6 +21,9 @@
  *
  * Backbone.js Patterns:
  * http://ricostacruz.com/backbone-patterns/index.html
+ *
+ * soundcloud player:
+ * https://github.com/soundcloud/soundcloud-custom-player/blob/master/js/sc-player.js
  */
 
 import { AppView, App } from './app';

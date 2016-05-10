@@ -17,9 +17,6 @@ set('repository', 'git@github.com:ritey/audious.git');
 // Path to composer.
 set('composer_command', 'composer');
 
-// Set path.
-env('path', $path);
-
 /**
  * Returns webroot folder.
  */
@@ -33,6 +30,22 @@ env('release_webroot', function () {
 env('release_path', function () {
     return str_replace("\n", '', run("readlink {{deploy_path}}/release"));
 });
+
+/**
+ * Append webroot to default recipe
+ */
+// Laravel shared dirs
+set('shared_dirs', [
+    'webroot/storage/app',
+    'webroot/storage/framework/cache',
+    'webroot/storage/framework/sessions',
+    'webroot/storage/framework/views',
+    'webroot/storage/logs',
+]);
+// Laravel 5 shared file
+set('shared_files', ['webroot/.env']);
+// Laravel writable dirs
+set('writable_dirs', ['webroot/storage', 'webroot/vendor']);
 
 // Override original composer task.
 /**
@@ -53,16 +66,9 @@ task('deploy:vendors', function () {
  * Make deployed files writable to www-data group.
  */
 task('change_permissions', function() {
-  run("chmod -R g+w {{release_path}}");
+  run("chmod -R g+w {{deploy_path}}/release/webroot");
 });
 //after('deploy', 'change_permissions');
-
-/**
- * Symlink .env file
- */
-task('environment', function() {
-  run("ln -s {{path}}/shared/.env {{release_webroot}}");
-});
 
 /**
  * Run Laravel5 optimisation commands.
@@ -72,8 +78,7 @@ task('optimise', function() {
   cd('{{deploy_path}}/release/webroot');
   run('php artisan optimize');
   run('php artisan config:cache');
-  // Enable when route classes are being used.
-  //run('php artisan route:cache');
+  run('php artisan route:cache');
 });
 
 // Deployment script.
@@ -84,7 +89,6 @@ task('deploy', [
   'deploy:vendors',
   'deploy:shared',
   'change_permissions',
-  'environment',
   'optimise',
   'deploy:symlink',
   'cleanup',

@@ -15,11 +15,6 @@ use App\Playlist;
 class PageController extends Controller
 {
   /**
-   * The Soundcloud instance.
-   */
-  protected $soundcloud;
-
-  /**
    * The Soundcloud repository instance.
    */
   protected $soundcloudRepository;
@@ -42,7 +37,6 @@ class PageController extends Controller
    * @return void
    */
   public function __construct(SoundcloudRepository $soundcloudRepository, GoogleRepository $googleRepository, SpotifyRepository $spotifyRepository) {
-    $this->soundcloud = $soundcloud;
     $this->soundcloudRepository = $soundcloudRepository;
     $this->googleRepository = $googleRepository;
     $this->spotifyRepository = $spotifyRepository;

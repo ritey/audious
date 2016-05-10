@@ -31,22 +31,6 @@ env('release_path', function () {
     return str_replace("\n", '', run("readlink {{deploy_path}}/release"));
 });
 
-/**
- * Append webroot to default recipe
- */
-// Laravel shared dirs
-set('shared_dirs', [
-    'webroot/storage/app',
-    'webroot/storage/framework/cache',
-    'webroot/storage/framework/sessions',
-    'webroot/storage/framework/views',
-    'webroot/storage/logs',
-]);
-// Laravel 5 shared file
-set('shared_files', ['.env']);
-// Laravel writable dirs
-set('writable_dirs', ['storage', 'vendor']);
-
 // Override original composer task.
 /**
  * Installing vendors tasks.

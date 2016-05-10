@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
-use Njasm\Soundcloud\SoundcloudFacade;
 use App\Repositories\SoundcloudRepository;
 use App\Repositories\GoogleRepository;
 use App\Repositories\SpotifyRepository;

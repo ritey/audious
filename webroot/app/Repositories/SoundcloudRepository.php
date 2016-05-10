@@ -23,13 +23,6 @@ class SoundcloudRepository
   protected $access_token;
 
   /**
-   * Pass Soundcloud API details up.
-   */
-  /*public function __construct(SoundcloudFacade $soundcloud) {
-    parent::__construct(env('SOUNDCLOUD_CLIENT_ID'), env('SOUNDCLOUD_CLIENT_SECRET'), env('SOUNDCLOUD_CALLBACK_URL'));
-    $this->soundcloud = $soundcloud;
-  }*/
-  /**
   * Pre-define common Guzzle params.
   */
   public function __construct(Request $request, $access_token = NULL) {

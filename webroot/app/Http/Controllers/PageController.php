@@ -41,7 +41,7 @@ class PageController extends Controller
    * @param  SoundcloudFacade  $soundcloud
    * @return void
    */
-  public function __construct(SoundcloudFacade $soundcloud, SoundcloudRepository $soundcloudRepository, GoogleRepository $googleRepository, SpotifyRepository $spotifyRepository) {
+  public function __construct(SoundcloudRepository $soundcloudRepository, GoogleRepository $googleRepository, SpotifyRepository $spotifyRepository) {
     $this->soundcloud = $soundcloud;
     $this->soundcloudRepository = $soundcloudRepository;
     $this->googleRepository = $googleRepository;

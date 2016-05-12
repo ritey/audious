@@ -1,5 +1,5 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-"use strict";
+'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -8,7 +8,11 @@ exports.AppView = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _SongCollection = require("./collections/SongCollection");
+var _SongCollection = require('./collections/SongCollection');
+
+var _song_details_player = require('./templates/song_details_player.tpl');
+
+var _Song = require('./models/Song');
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -47,29 +51,26 @@ var Router = _Backbone.Router;
   }
 }*/
 
-var Songs = new _SongCollection.SongCollection();
-
 var AppView = exports.AppView = function (_View) {
   _inherits(AppView, _View);
 
   _createClass(AppView, [{
-    key: "events",
+    key: 'events',
 
     // Define events we gonna listen on.
     get: function get() {
       return {
         "click button.player.play": "player_play",
-        "click button.player.pause": "player_pause"
+        "click button.player.pause": "player_pause",
+        "click button.player.stop": "player_stop"
       };
     }
   }]);
 
-  function AppView() {
+  function AppView(options) {
     _classCallCheck(this, AppView);
 
-    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(AppView).call(this));
-
-    _this.$el = $('#app');
+    //this.el = '#app';
     //this.$sync = $('#sync');
 
     //this.soundcloudReady = false;
@@ -79,15 +80,28 @@ var AppView = exports.AppView = function (_View) {
       this.authorise();
     }*/
 
+    // Player song details tpl.
+
+    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(AppView).call(this, options));
+
+    _this.song_details_template = _song_details_player.SONG_DETAILS_PLAYER;
+
     // Init player.
     _this.player = new Audio();
     // Variable for playing song. holds even when paused.
-    _this.current_song = null;
+    _this.current_song = {
+      model: {},
+      current_time: 0,
+      total_time: 0
+    };
     // Soundcloud cliend_id;
     _this.soundcloud_client_id = $("meta[name='soundcloud_client_id']").attr('content');
+
+    _this.songs = new _SongCollection.SongCollection();
+
     // Listen for events.
-    _this.listenTo(Songs, 'play', _this.play);
-    _this.listenTo(Songs, 'pause', _this.pause);
+    _this.listenTo(_this.songs, 'play', _this.play);
+    _this.listenTo(_this.songs, 'pause', _this.pause);
 
     // Add CSRF token for ajax requests.
     _this.addCSRFToken();
@@ -103,9 +117,10 @@ var AppView = exports.AppView = function (_View) {
 
 
   _createClass(AppView, [{
-    key: "render",
+    key: 'render',
     value: function render() {
-      var active = Songs.active();
+      this.$el.html(this.template());
+      return this;
     }
 
     /**
@@ -113,7 +128,7 @@ var AppView = exports.AppView = function (_View) {
      */
 
   }, {
-    key: "addCSRFToken",
+    key: 'addCSRFToken',
     value: function addCSRFToken() {
       if ($("meta[name='_token'").length) {
         $.ajaxSetup({
@@ -130,7 +145,7 @@ var AppView = exports.AppView = function (_View) {
      */
 
   }, {
-    key: "syncAllMusic",
+    key: 'syncAllMusic',
     value: function syncAllMusic() {
       var context = this;
       // Check if there is any refresh icons.
@@ -148,7 +163,7 @@ var AppView = exports.AppView = function (_View) {
      */
 
   }, {
-    key: "syncMusic",
+    key: 'syncMusic',
     value: function syncMusic($elem) {
       var title = $elem.attr('data-service-title');
       Backbone.ajax({
@@ -163,29 +178,20 @@ var AppView = exports.AppView = function (_View) {
       });
     }
   }, {
-    key: "play",
+    key: 'play',
     value: function play(song) {
-      /*
-      // Play song. Call dynamically service named function and pass active song model.
-      //this[this.model.get('service') + '_stop'](this.model);
-       // Play song. Call dynamically service named function and pass active song model.
-      //this[this.model.get('service') + '_play'](this.model);
-      */
-      if (this.current_song != song) {
+      // Construct function name from service variable and call it.
+      if (this.current_song.model != song) {
         this[song.get('service') + '_load'](song);
       } else {
         this[song.get('service') + '_play'](song);
       }
+
+      this.updateMusicPlayer(song);
     }
   }, {
-    key: "player_pause",
-    value: function player_pause() {
-      console.log('player pause');
-    }
-  }, {
-    key: "pause",
+    key: 'pause',
     value: function pause(song) {
-      console.log('lets pause');
       this[song.get('service') + '_pause'](song);
     }
 
@@ -194,14 +200,14 @@ var AppView = exports.AppView = function (_View) {
      */
 
   }, {
-    key: "soundcloud_load",
+    key: 'soundcloud_load',
     value: function soundcloud_load(song) {
       this.player.pause();
       this.player.src = 'https://api.soundcloud.com/tracks/' + song.get('identifier') + '/stream?consumer_key=' + this.soundcloud_client_id;
       this.player.load();
       this.player.play();
 
-      this.current_song = song;
+      this.current_song.model = song;
     }
 
     /**
@@ -209,7 +215,7 @@ var AppView = exports.AppView = function (_View) {
      */
 
   }, {
-    key: "soundcloud_play",
+    key: 'soundcloud_play',
     value: function soundcloud_play(song) {
       this.player.play();
     }
@@ -218,7 +224,7 @@ var AppView = exports.AppView = function (_View) {
      */
 
   }, {
-    key: "soundcloud_stop",
+    key: 'soundcloud_stop',
     value: function soundcloud_stop(song) {
       this.soundcloud_pause();
     }
@@ -228,9 +234,64 @@ var AppView = exports.AppView = function (_View) {
      */
 
   }, {
-    key: "soundcloud_pause",
+    key: 'soundcloud_pause',
     value: function soundcloud_pause(song) {
       this.player.pause();
+    }
+
+    /**
+     *  MUSIC PLAYER AT BOTTOM FUNCTIONS.
+     */
+
+  }, {
+    key: 'player_play',
+    value: function player_play() {
+      if (this.current_song.model.id.length) {
+        this.current_song.model.toggle();
+        this.play(this.current_song.model);
+      }
+    }
+
+    /**
+     * Music Player pause button action.
+     */
+
+  }, {
+    key: 'player_pause',
+    value: function player_pause() {
+      // Duplicate in SongView!
+      this.current_song.model.toggle();
+      this.pause(this.current_song.model);
+      this.updateMusicPlayer(this.current_song);
+    }
+
+    /**
+     * Music Player stop button action.
+     */
+
+  }, {
+    key: 'player_stop',
+    value: function player_stop() {
+      this.current_song.model.toggle();
+      this.pause(this.current_song.model);
+      this.current_song.model = new _Song.Song();
+      this.updateMusicPlayer(this.current_song);
+    }
+    /**
+       * Update Music Player details
+       */
+
+  }, {
+    key: 'updateMusicPlayer',
+    value: function updateMusicPlayer(song) {
+      // Set play/pause button.
+      var play_action = this.player.paused ? 'play' : 'pause';
+      var extend = {
+        play_action: play_action,
+        current_time: 0
+      };
+      var data = _.extend(song.toJSON(), extend);
+      $('#player').html(this.song_details_template(data));
     }
 
     /**
@@ -267,7 +328,7 @@ var AppView = exports.AppView = function (_View) {
   return AppView;
 }(View);
 
-},{"./collections/SongCollection":2}],2:[function(require,module,exports){
+},{"./collections/SongCollection":2,"./models/Song":4,"./templates/song_details_player.tpl":6}],2:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -350,16 +411,17 @@ var SongCollection = exports.SongCollection = function (_Collection) {
 }(Collection);
 
 },{"../models/Song":4,"../views/SongView":8}],3:[function(require,module,exports){
-'use strict';
+"use strict";
 
-var _app = require('./app');
+var _app = require("./app");
 
 /**
  * Document ready event
  */
 $(function () {
-  new _app.AppView();
-  //new App();
+  // Need to pass el in order for events to work.
+  // This is probably because I am trying to attach events on existing DOM.
+  new _app.AppView({ el: "#app" });
 }); /**
      * ES6
      * ref:
@@ -383,6 +445,9 @@ $(function () {
      *
      * Backbone.js Patterns:
      * http://ricostacruz.com/backbone-patterns/index.html
+     *
+     * soundcloud player:
+     * https://github.com/soundcloud/soundcloud-custom-player/blob/master/js/sc-player.js
      */
 
 },{"./app":1}],4:[function(require,module,exports){
@@ -480,7 +545,7 @@ Object.defineProperty(exports, "__esModule", {
 /**
  * Song details in music player at the bottom of the screen.
  */
-var SONG_DETAILS_PLAYER = exports.SONG_DETAILS_PLAYER = _.template("<div class='controls'>" + "<button class='pause player'><i class='fa fa-pause' aria-hidden='true'></i></button>" + "<button class='stop player'><i class='fa fa-stop' aria-hidden='true'></i></button>" + "<button class='previous player'><i class='fa fa-backward' aria-hidden='true'></i></button>" + "<button class='next player'><i class='fa fa-forward' aria-hidden='true'></i></button>" + "</div>" + "<div class='song-details'>" + "<span class='title'><%= title %></span>" + "</div>");
+var SONG_DETAILS_PLAYER = exports.SONG_DETAILS_PLAYER = _.template("<div class='controls'>" + "<button class='<%= play_action %> player'><i class='fa fa-<%= play_action %>' aria-hidden='true'></i></button>" + "<button class='stop player'><i class='fa fa-stop' aria-hidden='true'></i></button>" + "<button class='previous player'><i class='fa fa-backward' aria-hidden='true'></i></button>" + "<button class='next player'><i class='fa fa-forward' aria-hidden='true'></i></button>" + "</div>" + "<div class='song-details'>" + "<span class='title'><%= title %></span> <span><%= current_time %></span>" + "</div>");
 
 },{}],7:[function(require,module,exports){
 "use strict";
@@ -506,8 +571,6 @@ var _createClass = function () { function defineProperties(target, props) { for 
 var _song_inactive_li = require('../templates/song_inactive_li.tpl');
 
 var _song_active_li = require('../templates/song_active_li.tpl');
-
-var _song_details_player = require('../templates/song_details_player.tpl');
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -545,7 +608,7 @@ var SongView = exports.SongView = function (_View) {
     // Song active item tpl.
     _this.song_active_li_template = _song_active_li.SONG_ACTIVE_LI_TPL;
     // Player song details tpl.
-    _this.song_details_template = _song_details_player.SONG_DETAILS_PLAYER;
+    //this.song_details_template = SONG_DETAILS_PLAYER;
     // Listen for model changes.
     _this.listenTo(_this.model, 'change', _this.render);
 
@@ -562,8 +625,6 @@ var SongView = exports.SongView = function (_View) {
       if (is_active) {
         // Pass model data to template and then append to DOM.
         this.$el.html(this.song_active_li_template(this.model.toJSON()));
-        // Change Music player details.
-        this.updateMusicPlayer(this.model);
       } else {
         // Pass model data to template and then append to DOM.
         this.$el.html(this.song_inactive_li_template(this.model.toJSON()));
@@ -622,21 +683,11 @@ var SongView = exports.SongView = function (_View) {
         }
       }
     }
-
-    /**
-     * Update Music Player details
-     */
-
-  }, {
-    key: 'updateMusicPlayer',
-    value: function updateMusicPlayer(song) {
-      $('#player').html(this.song_details_template(song.toJSON()));
-    }
   }]);
 
   return SongView;
 }(View);
 
-},{"../templates/song_active_li.tpl":5,"../templates/song_details_player.tpl":6,"../templates/song_inactive_li.tpl":7}]},{},[3]);
+},{"../templates/song_active_li.tpl":5,"../templates/song_inactive_li.tpl":7}]},{},[3]);
 
 //# sourceMappingURL=main.js.map

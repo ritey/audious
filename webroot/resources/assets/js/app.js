@@ -1,6 +1,7 @@
 //import Marionette from 'backbone.marionette';
 import { SongCollection } from './collections/SongCollection';
-
+import { SONG_DETAILS_PLAYER } from './templates/song_details_player.tpl';
+import { Song } from './models/Song';
 //import { PlaylistCollection } from './collections/PlaylistCollection';
 //import { SongView } from './views/SongView';
 //import { SyncView } from './views/SyncView';
@@ -26,7 +27,6 @@ var { Model, View, Collection, Router } = Backbone;
     console.log('hello, Marionette');
   }
 }*/
-var Songs = new SongCollection();
 
 export class AppView extends View
 {
@@ -34,14 +34,15 @@ export class AppView extends View
   get events() {
     return {
       "click button.player.play": "player_play",
-      "click button.player.pause": "player_pause"
+      "click button.player.pause": "player_pause",
+      "click button.player.stop": "player_stop"
     };
   }
 
-  constructor() {
-    super();
+  constructor(options) {
+    super(options);
 
-    this.$el = $('#app');
+    //this.el = '#app';
     //this.$sync = $('#sync');
 
     //this.soundcloudReady = false;
@@ -51,15 +52,25 @@ export class AppView extends View
       this.authorise();
     }*/
 
+    // Player song details tpl.
+    this.song_details_template = SONG_DETAILS_PLAYER;
+
     // Init player.
     this.player = new Audio();
     // Variable for playing song. holds even when paused.
-    this.current_song = null;
+    this.current_song = {
+      model: {},
+      current_time: 0,
+      total_time: 0
+    };
     // Soundcloud cliend_id;
     this.soundcloud_client_id = $("meta[name='soundcloud_client_id']").attr('content');
+
+    this.songs = new SongCollection();
+
     // Listen for events.
-    this.listenTo(Songs, 'play', this.play);
-    this.listenTo(Songs, 'pause', this.pause);
+    this.listenTo(this.songs, 'play', this.play);
+    this.listenTo(this.songs, 'pause', this.pause);
 
     // Add CSRF token for ajax requests.
     this.addCSRFToken();
@@ -72,7 +83,8 @@ export class AppView extends View
    * Render App.
    */
   render() {
-    var active = Songs.active();
+    this.$el.html(this.template());
+    return this;
   }
 
   /**
@@ -122,27 +134,18 @@ export class AppView extends View
   }
 
   play(song) {
-    /*
-    // Play song. Call dynamically service named function and pass active song model.
-    //this[this.model.get('service') + '_stop'](this.model);
-
-    // Play song. Call dynamically service named function and pass active song model.
-    //this[this.model.get('service') + '_play'](this.model);
-    */
-    if (this.current_song != song) {
+    // Construct function name from service variable and call it.
+    if (this.current_song.model != song) {
       this[song.get('service') + '_load'](song);
     }
     else {
       this[song.get('service') + '_play'](song);
     }
-  }
 
-  player_pause() {
-    console.log('player pause');
+    this.updateMusicPlayer(song);
   }
 
   pause(song) {
-    console.log('lets pause');
     this[song.get('service') + '_pause'](song);
   }
 
@@ -155,7 +158,7 @@ export class AppView extends View
     this.player.load();
     this.player.play();
 
-    this.current_song = song;
+    this.current_song.model = song;
   }
 
   /**
@@ -177,6 +180,51 @@ export class AppView extends View
   soundcloud_pause(song) {
     this.player.pause();
   }
+
+/**
+ *  MUSIC PLAYER AT BOTTOM FUNCTIONS.
+ */
+
+ player_play() {
+    if (this.current_song.model.id.length) {
+      this.current_song.model.toggle();
+      this.play(this.current_song.model);
+    }
+  }
+
+  /**
+   * Music Player pause button action.
+   */
+  player_pause() {
+    // Duplicate in SongView!
+    this.current_song.model.toggle();
+    this.pause(this.current_song.model);
+    this.updateMusicPlayer(this.current_song);
+  }
+
+  /**
+   * Music Player stop button action.
+   */
+  player_stop() {
+    this.current_song.model.toggle();
+    this.pause(this.current_song.model);
+    this.current_song.model = new Song();
+    this.updateMusicPlayer(this.current_song);
+  }
+/**
+   * Update Music Player details
+   */
+  updateMusicPlayer(song) {
+    // Set play/pause button.
+    var play_action = this.player.paused ? 'play' : 'pause';
+    var extend = {
+      play_action: play_action,
+      current_time: 0
+    }
+    var data = _.extend(song.toJSON(), extend);
+    $('#player').html(this.song_details_template(data));
+  }
+
 
   /**
    * Display all songs.

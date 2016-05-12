@@ -32,6 +32,7 @@ import { AppView, App } from './app';
  * Document ready event
  */
 $(() => {
-  new AppView();
-  //new App();
+  // Need to pass el in order for events to work.
+  // This is probably because I am trying to attach events on existing DOM.
+  new AppView({el: "#app"});
 });
